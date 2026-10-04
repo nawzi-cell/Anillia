@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1500" viewBox="0 0 1200 1500" role="img" aria-label="Elegance in Every Detail">
+<rect width="1200" height="1500" fill="#EFE9DB"/>
+<ellipse cx="711" cy="468" rx="392" ry="623" fill="#737963" opacity="0.28"/>
+<path d="M0,270 C302,134 816,406 1200,282 L1200,522 C816,646 302,374 0,510 Z" fill="#C6BBA8" opacity="0.68"/>
+<path d="M0,580 C241,464 875,696 1200,480 L1200,720 C875,936 241,704 0,820 Z" fill="#737963" opacity="0.55"/>
+<path d="M0,890 C268,752 873,1028 1200,889 L1200,1129 C873,1268 268,992 0,1130 Z" fill="#5B6050" opacity="0.72"/>
+<path d="M0,1200 C241,1077 733,1323 1200,1244 L1200,1484 C733,1563 241,1317 0,1440 Z" fill="#C6BBA8" opacity="0.57"/>
+<line x1="96" y1="1320" x2="1104" y2="1320" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="600" y="660" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="90" fill="#2A2521" letter-spacing="2">Elegance in Every Detail</text>
+<text x="600" y="750" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="6">ANILLIEA</text>
+</svg>

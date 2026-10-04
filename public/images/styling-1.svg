@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="The Everyday Drape">
+<rect width="800" height="600" fill="#EFE9DB"/>
+<ellipse cx="554" cy="248" rx="256" ry="211" fill="#737963" opacity="0.28"/>
+<path d="M0,108 C306,71 506,145 800,108 L800,204 C506,241 306,167 0,204 Z" fill="#C6BBA8" opacity="0.37"/>
+<path d="M0,232 C186,184 549,280 800,270 L800,366 C549,376 186,280 0,328 Z" fill="#737963" opacity="0.39"/>
+<path d="M0,356 C273,311 631,401 800,325 L800,421 C631,497 273,407 0,452 Z" fill="#5B6050" opacity="0.65"/>
+<path d="M0,480 C222,430 493,530 800,516 L800,612 C493,626 222,526 0,576 Z" fill="#C6BBA8" opacity="0.45"/>
+<line x1="64" y1="528" x2="736" y2="528" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="480" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="538" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">The Everyday Drape</text>
+</svg>

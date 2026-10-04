@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Everyday Modest Deal">
+<rect width="800" height="1000" fill="#F5F0E8"/>
+<ellipse cx="637" cy="362" rx="266" ry="405" fill="#C6BBA8" opacity="0.28"/>
+<path d="M0,180 C253,103 583,257 800,163 L800,323 C583,417 253,263 0,340 Z" fill="#E7DCC8" opacity="0.56"/>
+<path d="M0,387 C300,289 671,485 800,461 L800,621 C671,645 300,449 0,547 Z" fill="#C6BBA8" opacity="0.72"/>
+<path d="M0,593 C178,499 642,688 800,549 L800,709 C642,848 178,659 0,753 Z" fill="#A69A89" opacity="0.67"/>
+<path d="M0,800 C298,695 614,905 800,778 L800,938 C614,1065 298,855 0,960 Z" fill="#E7DCC8" opacity="0.43"/>
+<line x1="64" y1="880" x2="736" y2="880" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="800" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="858" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Everyday Modest Deal</text>
+</svg>

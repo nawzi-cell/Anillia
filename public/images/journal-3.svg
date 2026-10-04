@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-label="Timeless Pieces">
+<rect width="1200" height="750" fill="#ECE5D5"/>
+<ellipse cx="853" cy="270" rx="413" ry="289" fill="#8B9179" opacity="0.28"/>
+<path d="M0,135 C251,54 877,216 1200,83 L1200,203 C877,336 251,174 0,255 Z" fill="#D9CDB4" opacity="0.66"/>
+<path d="M0,290 C380,234 822,346 1200,274 L1200,394 C822,466 380,354 0,410 Z" fill="#8B9179" opacity="0.51"/>
+<path d="M0,445 C440,376 882,514 1200,499 L1200,619 C882,634 440,496 0,565 Z" fill="#737963" opacity="0.54"/>
+<path d="M0,600 C320,511 866,689 1200,637 L1200,757 C866,809 320,631 0,720 Z" fill="#D9CDB4" opacity="0.73"/>
+<line x1="96" y1="660" x2="1104" y2="660" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="600" y="600" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="600" y="658" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Timeless Pieces</text>
+</svg>

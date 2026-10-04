@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-label="Fabric &amp; Season">
+<rect width="1200" height="750" fill="#ECE5D5"/>
+<ellipse cx="917" cy="271" rx="377" ry="277" fill="#8B9179" opacity="0.28"/>
+<path d="M0,135 C349,48 905,222 1200,67 L1200,187 C905,342 349,168 0,255 Z" fill="#D9CDB4" opacity="0.45"/>
+<path d="M0,290 C250,238 762,342 1200,281 L1200,401 C762,462 250,358 0,410 Z" fill="#8B9179" opacity="0.43"/>
+<path d="M0,445 C353,398 954,492 1200,480 L1200,600 C954,612 353,518 0,565 Z" fill="#737963" opacity="0.6"/>
+<path d="M0,600 C369,536 877,664 1200,658 L1200,778 C877,784 369,656 0,720 Z" fill="#D9CDB4" opacity="0.67"/>
+<line x1="96" y1="660" x2="1104" y2="660" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="600" y="600" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="600" y="658" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Fabric &amp; Season</text>
+</svg>

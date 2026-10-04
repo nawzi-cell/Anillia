@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Signature">
+<rect width="800" height="1000" fill="#EFE9DB"/>
+<ellipse cx="516" cy="408" rx="238" ry="342" fill="#737963" opacity="0.28"/>
+<path d="M0,180 C304,92 667,268 800,120 L800,280 C667,428 304,252 0,340 Z" fill="#C6BBA8" opacity="0.38"/>
+<path d="M0,387 C173,298 587,475 800,468 L800,628 C587,635 173,458 0,547 Z" fill="#737963" opacity="0.6"/>
+<path d="M0,593 C304,498 676,688 800,600 L800,760 C676,848 304,658 0,753 Z" fill="#5B6050" opacity="0.42"/>
+<path d="M0,800 C185,699 656,901 800,873 L800,1033 C656,1061 185,859 0,960 Z" fill="#C6BBA8" opacity="0.48"/>
+<line x1="64" y1="880" x2="736" y2="880" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="800" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="858" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Signature</text>
+</svg>

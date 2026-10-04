@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="ANILLIÉA">
+<rect width="1200" height="630" fill="#F5F0E8"/>
+<ellipse cx="833" cy="222" rx="356" ry="241" fill="#A69A89" opacity="0.28"/>
+<path d="M0,113 C380,49 1008,178 1200,92 L1200,193 C1008,279 380,150 0,214 Z" fill="#D8CBB8" opacity="0.54"/>
+<path d="M0,244 C296,183 829,304 1200,278 L1200,379 C829,405 296,284 0,344 Z" fill="#A69A89" opacity="0.75"/>
+<path d="M0,374 C407,316 896,432 1200,428 L1200,529 C896,533 407,417 0,475 Z" fill="#857768" opacity="0.46"/>
+<path d="M0,504 C427,448 824,560 1200,492 L1200,592 C824,661 427,549 0,605 Z" fill="#D8CBB8" opacity="0.64"/>
+<line x1="96" y1="554" x2="1104" y2="554" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="600" y="290" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="88" fill="#2A2521" letter-spacing="14">ANILLIÉA</text>
+<text x="600" y="378" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="24" fill="#857768" letter-spacing="4">Premium Modest Fashion · Pakistan</text>
+</svg>

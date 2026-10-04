@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="The Gift Edit">
+<rect width="800" height="1000" fill="#F5F0E8"/>
+<ellipse cx="481" cy="381" rx="243" ry="410" fill="#B8AE9E" opacity="0.28"/>
+<path d="M0,180 C257,93 560,267 800,256 L800,416 C560,427 257,253 0,340 Z" fill="#E2D6BE" opacity="0.48"/>
+<path d="M0,387 C271,278 562,495 800,475 L800,635 C562,655 271,438 0,547 Z" fill="#B8AE9E" opacity="0.75"/>
+<path d="M0,593 C278,482 495,705 800,600 L800,760 C495,865 278,642 0,753 Z" fill="#5C534C" opacity="0.74"/>
+<path d="M0,800 C279,727 536,873 800,834 L800,994 C536,1033 279,887 0,960 Z" fill="#E2D6BE" opacity="0.42"/>
+<line x1="64" y1="880" x2="736" y2="880" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="800" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="858" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">The Gift Edit</text>
+</svg>

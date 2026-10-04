@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-label="Layered for Winter">
+<rect width="800" height="600" fill="#F5F0E8"/>
+<ellipse cx="473" cy="195" rx="266" ry="226" fill="#C6BBA8" opacity="0.28"/>
+<path d="M0,108 C289,65 494,151 800,139 L800,235 C494,247 289,161 0,204 Z" fill="#E7DCC8" opacity="0.56"/>
+<path d="M0,232 C252,192 542,272 800,268 L800,364 C542,368 252,288 0,328 Z" fill="#C6BBA8" opacity="0.74"/>
+<path d="M0,356 C289,285 605,427 800,391 L800,487 C605,523 289,381 0,452 Z" fill="#A69A89" opacity="0.7"/>
+<path d="M0,480 C319,439 563,521 800,450 L800,546 C563,617 319,535 0,576 Z" fill="#E7DCC8" opacity="0.61"/>
+<line x1="64" y1="528" x2="736" y2="528" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="480" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="538" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Layered for Winter</text>
+</svg>

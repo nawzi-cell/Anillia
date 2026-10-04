@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Lightweight Niqab">
+<rect width="800" height="1000" fill="#EFE9DB"/>
+<ellipse cx="619" cy="324" rx="242" ry="406" fill="#737963" opacity="0.28"/>
+<path d="M0,180 C244,97 507,263 800,156 L800,316 C507,423 244,257 0,340 Z" fill="#C6BBA8" opacity="0.71"/>
+<path d="M0,387 C243,281 518,493 800,319 L800,479 C518,653 243,441 0,547 Z" fill="#737963" opacity="0.65"/>
+<path d="M0,593 C240,523 544,664 800,586 L800,746 C544,824 240,683 0,753 Z" fill="#5B6050" opacity="0.48"/>
+<path d="M0,800 C290,710 615,890 800,757 L800,917 C615,1050 290,870 0,960 Z" fill="#C6BBA8" opacity="0.54"/>
+<line x1="64" y1="880" x2="736" y2="880" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="800" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="858" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Lightweight Niqab</text>
+</svg>

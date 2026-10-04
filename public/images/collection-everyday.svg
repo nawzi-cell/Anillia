@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Everyday">
+<rect width="800" height="1000" fill="#F5F0E8"/>
+<ellipse cx="488" cy="369" rx="295" ry="369" fill="#A69A89" opacity="0.28"/>
+<path d="M0,180 C293,101 612,259 800,107 L800,267 C612,419 293,261 0,340 Z" fill="#D8CBB8" opacity="0.57"/>
+<path d="M0,387 C170,323 530,450 800,398 L800,558 C530,610 170,483 0,547 Z" fill="#A69A89" opacity="0.61"/>
+<path d="M0,593 C201,495 587,692 800,603 L800,763 C587,852 201,655 0,753 Z" fill="#857768" opacity="0.63"/>
+<path d="M0,800 C220,713 640,887 800,731 L800,891 C640,1047 220,873 0,960 Z" fill="#D8CBB8" opacity="0.58"/>
+<line x1="64" y1="880" x2="736" y2="880" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="800" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="858" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Everyday</text>
+</svg>

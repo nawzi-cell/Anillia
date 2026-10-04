@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #a69a89;
+  color: #2a2521;
+}
+
+/* Refined focus state for accessibility */
+:focus-visible {
+  outline: 2px solid #737963;
+  outline-offset: 2px;
+}
+
+/* Thin elegant scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f0e8;
+}
+::-webkit-scrollbar-thumb {
+  background: #c6bba8;
+  border-radius: 8px;
+  border: 2px solid #f5f0e8;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a69a89;
+}
+
+@layer components {
+  /* Page gutter used across the storefront */
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Editorial eyebrow label */
+  .eyebrow {
+    @apply font-sans text-[11px] font-semibold uppercase tracking-widest2 text-taupe-dark;
+  }
+
+  /* Hairline divider */
+  .hairline {
+    @apply border-t border-espresso/10;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbars for horizontal scrollers while keeping scrollability */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

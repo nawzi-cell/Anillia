@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Everyday Pin Set">
+<rect width="800" height="1000" fill="#EFE9DB"/>
+<ellipse cx="634" cy="322" rx="248" ry="367" fill="#737963" opacity="0.28"/>
+<path d="M0,180 C252,100 516,260 800,214 L800,374 C516,420 252,260 0,340 Z" fill="#C6BBA8" opacity="0.69"/>
+<path d="M0,387 C231,304 548,470 800,391 L800,551 C548,630 231,464 0,547 Z" fill="#737963" opacity="0.63"/>
+<path d="M0,593 C307,521 483,665 800,575 L800,735 C483,825 307,681 0,753 Z" fill="#5B6050" opacity="0.63"/>
+<path d="M0,800 C271,704 675,896 800,780 L800,940 C675,1056 271,864 0,960 Z" fill="#C6BBA8" opacity="0.43"/>
+<line x1="64" y1="880" x2="736" y2="880" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="800" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="858" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Everyday Pin Set</text>
+</svg>

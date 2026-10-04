@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000" role="img" aria-label="Premium Modest Bundle">
+<rect width="800" height="1000" fill="#EFE9DB"/>
+<ellipse cx="583" cy="330" rx="236" ry="371" fill="#737963" opacity="0.28"/>
+<path d="M0,180 C219,108 567,252 800,120 L800,280 C567,412 219,268 0,340 Z" fill="#C6BBA8" opacity="0.69"/>
+<path d="M0,387 C281,279 532,495 800,433 L800,593 C532,655 281,439 0,547 Z" fill="#737963" opacity="0.39"/>
+<path d="M0,593 C287,527 499,660 800,579 L800,739 C499,820 287,687 0,753 Z" fill="#5B6050" opacity="0.61"/>
+<path d="M0,800 C259,727 610,873 800,814 L800,974 C610,1033 259,887 0,960 Z" fill="#C6BBA8" opacity="0.66"/>
+<line x1="64" y1="880" x2="736" y2="880" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="400" y="800" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="5">ANILLIEA</text>
+<text x="400" y="858" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#2A2521">Premium Modest Bundle</text>
+</svg>

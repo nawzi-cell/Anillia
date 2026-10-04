@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" role="img" aria-label="Our Story">
+<rect width="1200" height="900" fill="#F5F0E8"/>
+<ellipse cx="757" cy="278" rx="358" ry="329" fill="#B8AE9E" opacity="0.28"/>
+<path d="M0,162 C327,74 900,250 1200,91 L1200,235 C900,394 327,218 0,306 Z" fill="#E2D6BE" opacity="0.39"/>
+<path d="M0,348 C305,279 880,417 1200,309 L1200,453 C880,561 305,423 0,492 Z" fill="#B8AE9E" opacity="0.7"/>
+<path d="M0,534 C305,429 929,639 1200,483 L1200,627 C929,783 305,573 0,678 Z" fill="#5C534C" opacity="0.58"/>
+<path d="M0,720 C369,660 900,780 1200,736 L1200,880 C900,924 369,804 0,864 Z" fill="#E2D6BE" opacity="0.46"/>
+<line x1="96" y1="792" x2="1104" y2="792" stroke="#2A2521" stroke-width="1" opacity="0.25"/>
+<text x="600" y="396" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="90" fill="#2A2521" letter-spacing="2">Our Story</text>
+<text x="600" y="450" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#857768" letter-spacing="6">ANILLIEA</text>
+</svg>
