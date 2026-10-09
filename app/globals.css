@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font stacks — loaded via Google Fonts <link> in app/layout.tsx.
+   (Replaces next/font/google so builds never fetch fonts at build time.) */
+:root {
+  --font-cormorant: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-inter: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
