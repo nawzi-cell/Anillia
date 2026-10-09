@@ -260,6 +260,29 @@ Unit tests live in `tests/unit/` and cover the framework-free domain logic in `l
 
 Note: the `lib/` modules above are built by the backend engineer against the contracts documented at the top of each test file — tests fail to import until those modules land.
 
+### API integration tests
+
+```bash
+npm run test:api   # provisions a TEST database, then runs tests/api/
+```
+
+API tests call the real route handlers (no HTTP server needed) against a
+**separate Postgres database** (`anilliea_test` by default — never your dev
+database). The run first pushes the schema and seeds known data, then exercises
+the full flows:
+
+| Test file            | Covers                                                        |
+| -------------------- | ------------------------------------------------------------- |
+| `auth.test.ts`       | register / login / me / logout, validation, rate limiting     |
+| `products.test.ts`   | product listing, pagination, search, detail, categories       |
+| `cart.test.ts`       | cart CRUD, stock limits, coupon apply/remove/validate        |
+| `checkout.test.ts`   | order placement, totals math, stock decrement, cart clearing  |
+| `admin.test.ts`      | RBAC (401/403), staff promote/demote guards, dashboard        |
+| `misc.test.ts`       | wishlist, newsletter, contact                                 |
+
+Requirements: a running Postgres 16 (e.g. `docker compose up -d`).
+Override the test database with `TEST_DATABASE_URL`.
+
 ---
 
 ## Deployment
