@@ -10,7 +10,7 @@
  *  - admin user            (ADMIN_EMAIL / ADMIN_PASSWORD)
  *  - demo customer         (customer@example.com / DEMO_PASSWORD) + home address
  *  - 7 categories, 3 collections
- *  - 8 products (+ variants, images, per-variant inventory)
+ *  - 16 products (+ variants, images, per-variant inventory)
  *  - 3 coupons (WELCOME10, FLAT500, BUNDLE20)
  *
  * No orders or reviews are seeded — the demo shop stays clean.
@@ -165,6 +165,7 @@ interface SeedProduct {
   careInstructions?: string;
   featured: boolean;
   soldCount: number;
+  imageUrl?: string; // overrides the default /images/products/<slug>.svg
   variants: SeedVariant[];
 }
 
@@ -357,6 +358,238 @@ const PRODUCTS: SeedProduct[] = [
     featured: false,
     soldCount: 265,
     variants: colorVariants("AMD-PMB", ["Taupe", "Olive"], [30, 30]),
+  },
+  {
+    name: "Aurélia Silk Scarf",
+    slug: "aurelia-silk-scarf",
+    sku: "AMD-AUS",
+    shortDescription: "Pure mulberry silk scarf in champagne gold.",
+    description:
+      "A whisper of champagne-gold silk, finished with hand-rolled edges. Drapes effortlessly " +
+      "as a hijab, a wrap, or an evening stole — the maison's signature in its purest form.",
+    price: 4850,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Champagne Gold"],
+    material: "Pure mulberry silk, hand-rolled edges",
+    careInstructions:
+      "Dry clean recommended. If hand washing, use cold water and mild silk detergent. Hang dry in shade.",
+    featured: true,
+    soldCount: 0,
+    imageUrl: "/images/products/aurelia-silk-scarf.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Champagne Gold",
+        size: "One Size",
+        sku: "AMD-AUS-CHA-OS",
+        sortOrder: 1,
+        quantity: 50,
+      },
+    ],
+  },
+  {
+    name: "Noir Élégance Handbag",
+    slug: "noir-elegance-handbag",
+    sku: "AMD-NEH",
+    shortDescription: "Structured black leather handbag with gold hardware.",
+    description:
+      "A structured silhouette in deep black pebbled leather, crowned with a sculptural gold " +
+      "top handle and lock. Carries the day into the evening without missing a beat.",
+    price: 18500,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Black"],
+    material: "Pebbled leather, polished gold hardware",
+    careInstructions:
+      "Wipe clean with a soft dry cloth. Store in the dust bag, away from direct sunlight.",
+    featured: false,
+    soldCount: 0,
+    imageUrl: "/images/products/noir-elegance-handbag.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Black",
+        size: "One Size",
+        sku: "AMD-NEH-BLA-OS",
+        sortOrder: 1,
+        quantity: 25,
+      },
+    ],
+  },
+  {
+    name: "Lune d'Or Necklace",
+    slug: "lune-dor-necklace",
+    sku: "AMD-LDN",
+    shortDescription: "Fine gold chain with a delicate crescent pendant.",
+    description:
+      "A fine gold chain bearing a delicate crescent pendant — a quiet signature of the maison. " +
+      "Made to be layered, or worn alone against black.",
+    price: 9750,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Gold"],
+    material: "Gold chain with crescent pendant",
+    careInstructions:
+      "Wipe clean with a soft dry cloth. Store separately to avoid tangling.",
+    featured: false,
+    soldCount: 0,
+    imageUrl: "/images/products/lune-dor-necklace.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Gold",
+        size: "One Size",
+        sku: "AMD-LDN-GOL-OS",
+        sortOrder: 1,
+        quantity: 40,
+      },
+    ],
+  },
+  {
+    name: "Éclat Pearl Earrings",
+    slug: "eclat-pearl-earrings",
+    sku: "AMD-EPE",
+    shortDescription: "Freshwater pearl earrings on polished gold hooks.",
+    description:
+      "Lustrous freshwater pearls suspended from polished gold hooks. Understated by day, " +
+      "luminous by night — light, caught and kept.",
+    price: 6200,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Pearl / Gold"],
+    material: "Freshwater pearls, polished gold hooks",
+    careInstructions:
+      "Wipe pearls with a soft damp cloth after wear. Keep away from perfume and hairspray.",
+    featured: false,
+    soldCount: 0,
+    imageUrl: "/images/products/eclat-pearl-earrings.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Pearl / Gold",
+        size: "One Size",
+        sku: "AMD-EPE-PEA-OS",
+        sortOrder: 1,
+        quantity: 40,
+      },
+    ],
+  },
+  {
+    name: "Souveraine Watch",
+    slug: "souveraine-watch",
+    sku: "AMD-SWW",
+    shortDescription: "Black dial watch in a polished gold case.",
+    description:
+      "A black dial set in a polished gold case on supple black leather. Minimal, precise, " +
+      "and quietly assured — time, kept beautifully.",
+    price: 24000,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Black / Gold"],
+    material: "Black dial, polished gold case, leather strap",
+    careInstructions:
+      "Wipe the case with a soft cloth. Keep away from water and strong magnets.",
+    featured: false,
+    soldCount: 0,
+    imageUrl: "/images/products/souveraine-watch.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Black / Gold",
+        size: "One Size",
+        sku: "AMD-SWW-BLA-OS",
+        sortOrder: 1,
+        quantity: 20,
+      },
+    ],
+  },
+  {
+    name: "Minuit Velvet Clutch",
+    slug: "minuit-velvet-clutch",
+    sku: "AMD-MVC",
+    shortDescription: "Midnight-black velvet clutch with an ornate gold clasp.",
+    description:
+      "Midnight-black velvet closed with an ornate gold clasp — the evening companion for " +
+      "occasions that matter. Small in size, certain in presence.",
+    price: 12900,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Black"],
+    material: "Cotton velvet, ornate gold clasp",
+    careInstructions:
+      "Brush gently with a soft clothes brush. Store in the dust bag.",
+    featured: false,
+    soldCount: 0,
+    imageUrl: "/images/products/minuit-velvet-clutch.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Black",
+        size: "One Size",
+        sku: "AMD-MVC-BLA-OS",
+        sortOrder: 1,
+        quantity: 30,
+      },
+    ],
+  },
+  {
+    name: "Héritage Belt",
+    slug: "heritage-belt",
+    sku: "AMD-HBT",
+    shortDescription: "Full-grain calfskin belt with a brushed gold buckle.",
+    description:
+      "Full-grain black calfskin with a brushed gold buckle. Cut clean and built to last — " +
+      "the quiet anchor of a considered wardrobe.",
+    price: 5400,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Black"],
+    material: "Full-grain calfskin, brushed gold buckle",
+    careInstructions:
+      "Wipe with a dry cloth. Condition the leather occasionally. Store flat or hung.",
+    featured: false,
+    soldCount: 0,
+    imageUrl: "/images/products/heritage-belt.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Black",
+        size: "One Size",
+        sku: "AMD-HBT-BLA-OS",
+        sortOrder: 1,
+        quantity: 40,
+      },
+    ],
+  },
+  {
+    name: "Céleste Sunglasses",
+    slug: "celeste-sunglasses",
+    sku: "AMD-CSG",
+    shortDescription: "Bold black acetate sunglasses with gold detailing.",
+    description:
+      "Bold black acetate softened by gold temple detailing. Sculptural shade for bright days — " +
+      "worn with everything, noticed by everyone.",
+    price: 11300,
+    categorySlug: "accessories",
+    collectionSlugs: [],
+    colors: ["Black / Gold"],
+    material: "Black acetate, gold temple detailing",
+    careInstructions:
+      "Clean lenses with a microfibre cloth. Store in the hard case.",
+    featured: false,
+    soldCount: 0,
+    imageUrl: "/images/products/celeste-sunglasses.webp",
+    variants: [
+      {
+        name: "One Size",
+        color: "Black / Gold",
+        size: "One Size",
+        sku: "AMD-CSG-BLA-OS",
+        sortOrder: 1,
+        quantity: 35,
+      },
+    ],
   },
 ];
 
@@ -554,7 +787,7 @@ async function main(): Promise<void> {
     await prisma.productImage.create({
       data: {
         productId: product.id,
-        url: `/images/products/${p.slug}.svg`,
+        url: p.imageUrl ?? `/images/products/${p.slug}.svg`,
         alt: p.name,
         sortOrder: 1,
       },
