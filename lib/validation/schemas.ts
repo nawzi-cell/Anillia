@@ -281,6 +281,23 @@ export const messageReadSchema = z.object({
 });
 
 // ---------------------------------------------------------------------------
+// Journal
+// ---------------------------------------------------------------------------
+
+export const journalArticleSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(200),
+  slug: z.string().trim().min(1).max(200).optional(),
+  excerpt: z.string().trim().min(1, "Excerpt is required").max(500),
+  image: z.string().trim().min(1, "Image URL is required").max(500),
+  content: z
+    .array(z.string().trim().min(1))
+    .min(1, "Write at least one paragraph"),
+  published: z.boolean().default(false),
+  featured: z.boolean().default(false),
+  publishedAt: z.coerce.date(),
+});
+
+// ---------------------------------------------------------------------------
 // Pagination
 // ---------------------------------------------------------------------------
 

@@ -272,3 +272,20 @@ export interface StaffListItem {
   createdAt: string;
   _count: { orders: number };
 }
+
+export interface JournalArticleListItem {
+  id: string;
+  title: string;
+  slug: string;
+  image: string | null;
+  publishedAt: string;
+  published: boolean;
+  featured: boolean;
+}
+
+export interface JournalArticleFull extends JournalArticleListItem {
+  excerpt: string | null;
+  content: string[];
+  createdAt: string;
+  updatedAt: string;
+}
