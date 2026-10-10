@@ -47,29 +47,20 @@ function LoginForm() {
       const sessionUser = await login(email.trim(), password);
       if (!sessionUser) {
         // TEMP-DIAG (2026-10-03): credentials were accepted but the session
-        // check failed — ask the server WHY and show it instead of the
-        // mystery bounce. Remove once the sign-in issue is resolved.
-        let diag = "NO_COOKIE";
+        // check failed — capture EXACT details. Remove once resolved.
+        let detail = "NO_COOKIE";
         try {
           const r = await fetch("/api/auth/me", { credentials: "include", cache: "no-store" });
-          const j = (await r.json().catch(() => null)) as { diag?: string } | null;
-          if (j && typeof j.diag === "string") diag = j.diag;
-        } catch {
-          /* keep default */
+          const text = await r.text();
+          let j: { diag?: string } | null = null;
+          try { j = JSON.parse(text); } catch { /* not JSON */ }
+          const diagVal = j && typeof j.diag === "string" ? j.diag : null;
+          detail = `status=${r.status} diag=${diagVal ?? "none"} body=${text.slice(0, 120)}`;
+        } catch (e) {
+          detail = `FETCH_FAILED: ${e instanceof Error ? e.message : String(e)}`;
         }
-        if (diag === "NO_USER") {
-          setError(
-            "Signed in, but your account wasn't found in the database. Please run 'npx prisma db seed' and try again."
-          );
-        } else if (diag === "BAD_TOKEN" || diag === "ERROR") {
-          setError(
-            `Signed in, but the server rejected the session (code ${diag}). Please tell Remy you saw this exact message.`
-          );
-        } else {
-          setError(
-            "Signed in, but your browser didn't keep the login session (code NO_COOKIE). This usually means cookies are blocked for this site. Please allow cookies for this site and try again."
-          );
-        }
+        // Show the real diagnostic to the user so they can report it exactly.
+        setError(`Signed in, but session check failed [${detail}]. Please tell Remy this exact message.`);
         return;
       }
       router.push(next.startsWith("/") ? next : "/");
