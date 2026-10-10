@@ -7,6 +7,9 @@ import { handleApiError } from "@/lib/api/errors";
 import { logAudit } from "@/lib/audit/log";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const roleUpdateSchema = z.object({
   role: z.enum(["ADMIN", "CUSTOMER"]),
 });
