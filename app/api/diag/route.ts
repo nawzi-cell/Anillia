@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /**
  * Production diagnostics — no secrets, no PII, booleans only.
@@ -10,18 +10,21 @@ import { NextResponse } from "next/server";
  *   - env:  whether required environment variables are present
  *   - db:   whether the database is reachable and the core tables exist
  *   - jwt:  whether JWT signing works
+ *   - req:  what the server sees about the incoming request (protocol
+ *            headers) — used to diagnose cookie Secure-flag issues
  *
  * Safe to expose: returns only true/false/counts, never secret values,
  * connection strings, or user data. Used to diagnose "auth broken on
  * Vercel" without needing dashboard access.
  */
-export async function GET(): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<NextResponse> {
   const report: Record<string, unknown> = {
     ok: false,
     timestamp: new Date().toISOString(),
     env: {},
     db: {},
     jwt: {},
+    req: {},
   };
 
   // --- Environment variables (presence only) -------------------------------
@@ -115,6 +118,22 @@ export async function GET(): Promise<NextResponse> {
       // ignore introspection failures
     }
   }
+
+  // --- Request / protocol visibility -------------------------------------------
+  // Helps diagnose cookie Secure-flag issues: reports what the server sees,
+  // and whether the session cookie would be set with Secure=true.
+  const fwdProto = req.headers.get("x-forwarded-proto");
+  const vercelEnv = process.env.VERCEL === "1";
+  (report.req as Record<string, unknown>).xForwardedProto = fwdProto;
+  (report.req as Record<string, unknown>).vercelEnv = vercelEnv;
+  (report.req as Record<string, unknown>).urlProtocol = req.nextUrl.protocol;
+  (report.req as Record<string, unknown>).cookieWouldBeSecure =
+    vercelEnv ||
+    (fwdProto !== null &&
+      fwdProto.split(",")[0].trim().toLowerCase() === "https") ||
+    req.nextUrl.protocol === "https:";
+  (report.req as Record<string, unknown>).cookiePresent =
+    req.cookies.get("anilliea_session") !== undefined;
 
   const env = report.env as Record<string, boolean>;
   const db = report.db as Record<string, unknown>;

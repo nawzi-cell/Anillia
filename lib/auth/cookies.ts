@@ -12,11 +12,20 @@ const SEVEN_DAYS_SECONDS = 60 * 60 * 24 * 7;
  * plain-http URL. When the scheme is unknown we err on the side of NOT
  * setting Secure: omitting it on https still works, but setting it on http
  * always breaks.
+ *
+ * Vercel override: Vercel production is always served over HTTPS, so when
+ * running on Vercel we always set Secure. (Vercel sets VERCEL=1.)
  */
 function isSecureRequest(req: NextRequest): boolean {
+  if (process.env.VERCEL === "1") return true;
   const proto = req.headers.get("x-forwarded-proto");
   if (proto) {
     return proto.split(",")[0].trim().toLowerCase() === "https";
+  }
+  try {
+    if (req.nextUrl.protocol === "https:") return true;
+  } catch {
+    // ignore URL parse failures
   }
   return false;
 }
