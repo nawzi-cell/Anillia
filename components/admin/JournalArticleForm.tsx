@@ -11,6 +11,7 @@ import { AdminTextarea } from "./AdminTextarea";
 import { AdminButton } from "./AdminButton";
 import { AdminCard } from "./AdminCard";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { ImageUpload } from "./ImageUpload";
 import { LoadingState, ErrorState } from "./Spinner";
 import type { JournalArticleFull } from "./types";
 
@@ -214,7 +215,7 @@ export function JournalArticleForm({ articleId }: JournalArticleFormProps) {
               placeholder="Short summary shown on Journal cards and metadata."
               required
             />
-            <div className="grid gap-4 sm:grid-cols-[1fr_180px]">
+            <div className="grid gap-4 sm:grid-cols-[1fr_auto_180px]">
               <AdminInput
                 label="Image URL"
                 value={image}
@@ -222,6 +223,13 @@ export function JournalArticleForm({ articleId }: JournalArticleFormProps) {
                 placeholder="/images/journal-1.svg"
                 required
               />
+              <div className="flex items-end pb-0.5">
+                <ImageUpload
+                  label="Upload"
+                  onUploaded={(url) => setImage(url)}
+                  onError={(msg) => error(msg)}
+                />
+              </div>
               <AdminInput
                 label="Publish date"
                 type="date"

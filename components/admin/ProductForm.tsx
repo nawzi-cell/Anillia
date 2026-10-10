@@ -12,6 +12,7 @@ import { AdminTextarea } from "./AdminTextarea";
 import { AdminButton } from "./AdminButton";
 import { AdminCard } from "./AdminCard";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { ImageUpload } from "./ImageUpload";
 import { LoadingState, ErrorState } from "./Spinner";
 import type { Category, Collection, ProductFull, ProductVariant } from "./types";
 
@@ -436,7 +437,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         {/* Images */}
         <AdminCard
           title="Images"
-          subtitle="Paste image URLs. Placeholder SVGs live under /images/products/*.svg."
+          subtitle="Paste image URLs or upload files. Placeholder SVGs live under /images/products/*.svg."
           actions={
             <AdminButton
               variant="secondary"
@@ -450,7 +451,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         >
           <div className="flex flex-col gap-3">
             {images.map((img, i) => (
-              <div key={i} className="grid items-end gap-3 sm:grid-cols-[1fr_1fr_auto]">
+              <div key={i} className="grid items-end gap-3 sm:grid-cols-[1fr_1fr_auto_auto]">
                 <AdminInput
                   label={i === 0 ? "Image URL" : undefined}
                   value={img.url}
@@ -470,6 +471,15 @@ export function ProductForm({ productId }: ProductFormProps) {
                     )
                   }
                   placeholder="Descriptive alt text"
+                />
+                <ImageUpload
+                  label="Upload"
+                  onUploaded={(url) =>
+                    setImages((prev) =>
+                      prev.map((x, j) => (j === i ? { ...x, url } : x)),
+                    )
+                  }
+                  onError={(msg) => error(msg)}
                 />
                 <AdminButton
                   variant="ghost"

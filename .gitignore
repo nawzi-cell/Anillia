@@ -38,3 +38,6 @@ next-env.d.ts
 
 # vitest
 .vitest
+
+# local dev uploads (never commit; use Vercel Blob in production)
+/public/uploads/
