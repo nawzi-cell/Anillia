@@ -5,6 +5,9 @@ import { requireUser } from "@/lib/auth/session";
 import { ok } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const readSchema = z.object({
   ids: z.array(z.string().uuid()).optional(),
 });

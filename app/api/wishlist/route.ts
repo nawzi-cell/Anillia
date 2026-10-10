@@ -5,6 +5,9 @@ import { requireUser } from "@/lib/auth/session";
 import { ok } from "@/lib/api/response";
 import { handleApiError, ApiError } from "@/lib/api/errors";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function getOrCreateWishlist(userId: string) {
   const existing = await prisma.wishlist.findUnique({ where: { userId } });
   if (existing) return existing;

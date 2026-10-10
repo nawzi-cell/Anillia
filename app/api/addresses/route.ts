@@ -5,6 +5,9 @@ import { ok } from "@/lib/api/response";
 import { handleApiError, ApiError } from "@/lib/api/errors";
 import { addressSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function getOwnAddress(userId: string, id: string) {
   const address = await prisma.address.findFirst({
     where: { id, userId },

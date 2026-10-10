@@ -6,6 +6,9 @@ import { ok, fail, paginated } from "@/lib/api/response";
 import { handleApiError, ApiError } from "@/lib/api/errors";
 import { reviewSchema, paginationSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * Auth: submit a product review.
  * Only customers with a DELIVERED order containing the product may review

@@ -7,6 +7,9 @@ import { createOrder } from "@/lib/orders/checkout";
 import { sendEmail } from "@/lib/email";
 import { formatPKR } from "@/lib/utils/format";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * Auth: place an order from the current cart.
  * Pricing, stock, and coupons are all computed/validated server-side —

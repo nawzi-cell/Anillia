@@ -4,6 +4,9 @@ import { requireUser } from "@/lib/auth/session";
 import { ok } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Auth: remove a product from the wishlist. */
 export async function DELETE(
   _req: NextRequest,

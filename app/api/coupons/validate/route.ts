@@ -5,6 +5,9 @@ import { ok } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { validateCoupon, type CouponLike } from "@/lib/coupons/engine";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const validateSchema = z.object({
   code: z.string().trim().min(1, "Coupon code is required"),
   subtotal: z.number().int().min(0).optional(),

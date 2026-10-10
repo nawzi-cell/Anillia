@@ -4,6 +4,9 @@ import { requireUser } from "@/lib/auth/session";
 import { ok, fail } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Auth: fetch one of the current user's orders. Never leaks others' orders. */
 export async function GET(
   _req: NextRequest,

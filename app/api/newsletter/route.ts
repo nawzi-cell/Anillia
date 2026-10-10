@@ -4,6 +4,9 @@ import { ok } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { newsletterSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Public: subscribe to the newsletter (upsert, reactivates). */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
