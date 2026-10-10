@@ -5,6 +5,9 @@ import { handleApiError } from "@/lib/api/errors";
 import { paginationSchema } from "@/lib/validation/schemas";
 import { productCardInclude, withAvailability } from "@/lib/catalog/products";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Public: collection detail with its published products (paginated). */
 export async function GET(
   req: NextRequest,

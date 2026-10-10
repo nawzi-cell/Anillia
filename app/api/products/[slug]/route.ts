@@ -5,6 +5,9 @@ import { ok, fail } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { productCardInclude, withAvailability } from "@/lib/catalog/products";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: { slug: string } }

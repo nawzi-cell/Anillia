@@ -6,6 +6,9 @@ import { handleApiError, ApiError } from "@/lib/api/errors";
 import { updateCartItemSchema } from "@/lib/validation/schemas";
 import { getCartWithTotals, availableUnits } from "@/lib/cart/cart";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Auth: load a cart item that belongs to the current user. */
 async function getOwnItem(userId: string, itemId: string) {
   const item = await prisma.cartItem.findUnique({

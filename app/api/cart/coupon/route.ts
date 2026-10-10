@@ -8,6 +8,9 @@ import { validateCoupon, type CouponLike } from "@/lib/coupons/engine";
 import { getCartWithTotals } from "@/lib/cart/cart";
 import type { Coupon } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 function toCouponLike(coupon: Coupon): CouponLike {
   return {
     code: coupon.code,

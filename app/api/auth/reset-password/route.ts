@@ -5,6 +5,9 @@ import { ok, fail } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { resetPasswordSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = resetPasswordSchema.parse(await req.json());

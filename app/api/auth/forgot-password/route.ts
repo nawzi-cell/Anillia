@@ -8,6 +8,9 @@ import { rateLimit } from "@/lib/utils/rate-limit";
 import { getClientIp } from "@/lib/utils/request";
 import { sendEmail } from "@/lib/email";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const GENERIC_MESSAGE =
   "If an account exists for this email, a password reset link has been sent.";
 

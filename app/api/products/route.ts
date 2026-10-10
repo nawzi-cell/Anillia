@@ -7,6 +7,9 @@ import { handleApiError } from "@/lib/api/errors";
 import { paginationSchema } from "@/lib/validation/schemas";
 import { productCardInclude, withAvailability } from "@/lib/catalog/products";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const querySchema = paginationSchema.extend({
   search: z.string().trim().max(100).optional(),
   category: z.string().trim().max(100).optional(),

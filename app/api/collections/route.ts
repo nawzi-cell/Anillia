@@ -3,6 +3,9 @@ import { prisma } from "@/lib/db/prisma";
 import { ok } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Public: list active collections, ordered. */
 export async function GET(): Promise<NextResponse> {
   try {

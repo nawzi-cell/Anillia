@@ -6,6 +6,9 @@ import { handleApiError, ApiError } from "@/lib/api/errors";
 import { cartItemSchema } from "@/lib/validation/schemas";
 import { getOrCreateCart, getCartWithTotals, availableUnits } from "@/lib/cart/cart";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * Auth: add an item to the cart (upserts when the same product+variant
  * is already present). Stock is validated server-side.
