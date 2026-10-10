@@ -8,6 +8,8 @@ import { updateProfileSchema } from "@/lib/validation/schemas";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+const NO_STORE = { "Cache-Control": "no-store, max-age=0" };
+
 export async function GET(): Promise<NextResponse> {
   try {
     // TEMP-DIAG (2026-10-03): return the precise failure reason so the
@@ -16,10 +18,12 @@ export async function GET(): Promise<NextResponse> {
     if (diag !== "OK" || !user) {
       return NextResponse.json(
         { success: false, message: "Unauthorized", diag },
-        { status: 401 }
+        { status: 401, headers: NO_STORE }
       );
     }
-    return ok(toUserDTO(user));
+    const res = ok(toUserDTO(user));
+    Object.entries(NO_STORE).forEach(([k, v]) => res.headers.set(k, v));
+    return res;
   } catch (e) {
     return handleApiError(e);
   }
