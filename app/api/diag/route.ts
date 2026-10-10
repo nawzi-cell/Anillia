@@ -25,6 +25,7 @@ export async function GET(): Promise<NextResponse> {
   };
 
   // --- Environment variables (presence only) -------------------------------
+  const rawDbUrl = process.env.DATABASE_URL || "";
   const envCheck: Record<string, boolean> = {
     DATABASE_URL: !!process.env.DATABASE_URL,
     JWT_SECRET: !!process.env.JWT_SECRET,
@@ -35,6 +36,14 @@ export async function GET(): Promise<NextResponse> {
     BLOB_READ_WRITE_TOKEN: !!process.env.BLOB_READ_WRITE_TOKEN,
   };
   report.env = envCheck;
+  // Non-sensitive shape hints for the DB URL (never the value itself).
+  (report.db as Record<string, unknown>).urlHint = {
+    length: rawDbUrl.length,
+    protocol: rawDbUrl.split("://")[0] || "(none)",
+    hasAtSign: rawDbUrl.includes("@"),
+    hasWhitespace: /\s/.test(rawDbUrl),
+    startsWithQuote: /^["']/.test(rawDbUrl.trim()),
+  };
 
   // --- JWT ------------------------------------------------------------------
   try {
@@ -83,13 +92,27 @@ export async function GET(): Promise<NextResponse> {
   } catch (e) {
     (report.db as Record<string, unknown>).reachable = false;
     const err = e as { message?: string; code?: string; meta?: unknown };
-    (report.db as Record<string, unknown>).error =
+    const dbReport = report.db as Record<string, unknown>;
+    dbReport.error =
       (typeof err.message === "string" && err.message.split("\n")[0].trim()) ||
       "unknown";
-    // Prisma error codes: P1000 = bad credentials, P1001 = unreachable,
-    // P1003 = database does not exist.
     if (typeof err.code === "string") {
-      (report.db as Record<string, unknown>).code = err.code;
+      dbReport.code = err.code;
+    }
+    // Verbose fallback: capture whatever the thrown value actually is,
+    // since some runtimes swallow Error details (empty message, no code).
+    try {
+      dbReport.errorType =
+        e === null ? "null" : e === undefined ? "undefined" : typeof e;
+      const ctor = (e as { constructor?: { name?: string } })?.constructor;
+      if (ctor?.name) dbReport.errorName = ctor.name;
+      const asString = String(e);
+      if (asString && asString !== "[object Object]") {
+        dbReport.errorString = asString.slice(0, 300);
+      }
+      dbReport.errorJson = JSON.stringify(e).slice(0, 500);
+    } catch {
+      // ignore introspection failures
     }
   }
 
