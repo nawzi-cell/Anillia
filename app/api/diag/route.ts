@@ -82,8 +82,15 @@ export async function GET(): Promise<NextResponse> {
     }
   } catch (e) {
     (report.db as Record<string, unknown>).reachable = false;
+    const err = e as { message?: string; code?: string; meta?: unknown };
     (report.db as Record<string, unknown>).error =
-      e instanceof Error ? e.message.split("\n")[0] : "unknown";
+      (typeof err.message === "string" && err.message.split("\n")[0].trim()) ||
+      "unknown";
+    // Prisma error codes: P1000 = bad credentials, P1001 = unreachable,
+    // P1003 = database does not exist.
+    if (typeof err.code === "string") {
+      (report.db as Record<string, unknown>).code = err.code;
+    }
   }
 
   const env = report.env as Record<string, boolean>;
