@@ -5,6 +5,9 @@ import { ok, fail } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { updateProfileSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET(): Promise<NextResponse> {
   try {
     // TEMP-DIAG (2026-10-03): return the precise failure reason so the

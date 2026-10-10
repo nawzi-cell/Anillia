@@ -10,6 +10,9 @@ import { registerSchema } from "@/lib/validation/schemas";
 import { rateLimit } from "@/lib/utils/rate-limit";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const ip = getClientIp(req);
