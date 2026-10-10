@@ -9,6 +9,9 @@ import { slugify } from "@/lib/utils/format";
 import { logAudit } from "@/lib/audit/log";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 async function uniqueProductSlug(base: string, excludeId?: string): Promise<string> {
   let slug = base;
   let i = 2;

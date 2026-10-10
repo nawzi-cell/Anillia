@@ -4,6 +4,9 @@ import { requireAdmin } from "@/lib/auth/session";
 import { ok } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /**
  * Admin: dashboard overview — stats, 14-day revenue, orders by status,
  * recent orders/customers, low-stock inventory, pending reviews.

@@ -7,6 +7,9 @@ import { orderStatusUpdateSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit/log";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Admin: fetch one order with items, payment, and customer. */
 export async function GET(
   _req: NextRequest,

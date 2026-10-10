@@ -8,6 +8,9 @@ import { slugify } from "@/lib/utils/format";
 import { logAudit } from "@/lib/audit/log";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const updateSchema = categorySchema.partial();
 
 async function uniqueCategorySlug(base: string, excludeId: string): Promise<string> {

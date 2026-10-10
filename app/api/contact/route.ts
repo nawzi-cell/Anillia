@@ -6,6 +6,9 @@ import { contactSchema } from "@/lib/validation/schemas";
 import { rateLimit } from "@/lib/utils/rate-limit";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Public: submit a contact message. Rate-limited to prevent spam. */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
