@@ -464,17 +464,17 @@ model Notification {
 
 model JournalArticle {
   id          String   @id @default(uuid()) @db.Uuid
-  title       String
   slug        String   @unique
-  excerpt     String?
-  image       String?
-  content     Json     @default("[]")
+  title       String
+  excerpt     String
+  image       String
+  content     String[]
   published   Boolean  @default(false)
   featured    Boolean  @default(false)
   publishedAt DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([published, publishedAt])
-  @@map("journal_articles")
+  @@index([published, featured])
+  @@index([publishedAt])
 }

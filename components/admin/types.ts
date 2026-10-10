@@ -277,14 +277,14 @@ export interface JournalArticleListItem {
   id: string;
   title: string;
   slug: string;
-  image: string | null;
+  image: string;
   publishedAt: string;
   published: boolean;
   featured: boolean;
 }
 
 export interface JournalArticleFull extends JournalArticleListItem {
-  excerpt: string | null;
+  excerpt: string;
   content: string[];
   createdAt: string;
   updatedAt: string;
