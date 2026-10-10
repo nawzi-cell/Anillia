@@ -5,6 +5,9 @@ import { paginated } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { paginationSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Admin: list inventory rows with computed availability and low-stock flag. */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {

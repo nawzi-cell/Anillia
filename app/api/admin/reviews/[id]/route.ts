@@ -7,6 +7,9 @@ import { reviewStatusUpdateSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit/log";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Admin: moderate a review (approve / hide). */
 export async function PUT(
   req: NextRequest,

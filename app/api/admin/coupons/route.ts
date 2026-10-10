@@ -7,6 +7,9 @@ import { couponSchema, paginationSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit/log";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Admin: list coupons, newest first. */
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {

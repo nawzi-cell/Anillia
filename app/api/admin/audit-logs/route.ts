@@ -6,6 +6,9 @@ import { paginated } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { paginationSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const querySchema = paginationSchema.extend({
   entity: z.string().trim().max(60).optional(),
   action: z.string().trim().max(60).optional(),

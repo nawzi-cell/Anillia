@@ -7,6 +7,9 @@ import { inventoryUpdateSchema } from "@/lib/validation/schemas";
 import { logAudit } from "@/lib/audit/log";
 import { getClientIp } from "@/lib/utils/request";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 /** Admin: adjust an inventory row's quantity / low-stock threshold. */
 export async function PUT(
   req: NextRequest,

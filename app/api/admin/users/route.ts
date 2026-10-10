@@ -7,6 +7,9 @@ import { paginated } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { paginationSchema } from "@/lib/validation/schemas";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const querySchema = paginationSchema.extend({
   search: z.string().trim().max(100).optional(),
   role: z.enum(["ADMIN", "CUSTOMER"]).optional(),
