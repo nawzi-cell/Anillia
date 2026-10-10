@@ -37,6 +37,9 @@ export async function apiFetch<T>(
   const res = await fetch(path, {
     method: options.method ?? "GET",
     credentials: "include",
+    // Never serve auth/session data from the browser HTTP cache: a stale
+    // cached 401 right after login makes the app think the session is gone.
+    cache: "no-store",
     headers: { "Content-Type": "application/json" },
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
   });

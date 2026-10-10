@@ -51,7 +51,7 @@ function LoginForm() {
         // mystery bounce. Remove once the sign-in issue is resolved.
         let diag = "NO_COOKIE";
         try {
-          const r = await fetch("/api/auth/me", { credentials: "include" });
+          const r = await fetch("/api/auth/me", { credentials: "include", cache: "no-store" });
           const j = (await r.json().catch(() => null)) as { diag?: string } | null;
           if (j && typeof j.diag === "string") diag = j.diag;
         } catch {
