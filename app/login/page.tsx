@@ -46,21 +46,7 @@ function LoginForm() {
     try {
       const sessionUser = await login(email.trim(), password);
       if (!sessionUser) {
-        // TEMP-DIAG (2026-10-03): credentials were accepted but the session
-        // check failed — capture EXACT details. Remove once resolved.
-        let detail = "NO_COOKIE";
-        try {
-          const r = await fetch("/api/auth/me", { credentials: "include", cache: "no-store" });
-          const text = await r.text();
-          let j: { diag?: string } | null = null;
-          try { j = JSON.parse(text); } catch { /* not JSON */ }
-          const diagVal = j && typeof j.diag === "string" ? j.diag : null;
-          detail = `status=${r.status} diag=${diagVal ?? "none"} body=${text.slice(0, 120)}`;
-        } catch (e) {
-          detail = `FETCH_FAILED: ${e instanceof Error ? e.message : String(e)}`;
-        }
-        // Show the real diagnostic to the user so they can report it exactly.
-        setError(`Signed in, but session check failed [${detail}]. Please tell Remy this exact message.`);
+        setError("Could not sign you in. Please try again.");
         return;
       }
       router.push(next.startsWith("/") ? next : "/");

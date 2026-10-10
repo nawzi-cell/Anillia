@@ -41,25 +41,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refresh().finally(() => setLoading(false));
   }, [refresh]);
 
-  const login = useCallback(
-    async (email: string, password: string): Promise<User | null> => {
-      await apiFetch("/api/auth/login", { method: "POST", body: { email, password } });
-      // Return the refreshed session so callers can verify the browser
-      // actually kept the session cookie before navigating.
-      return refresh();
-    },
-    [refresh]
-  );
+  const login = useCallback(async (email: string, password: string): Promise<User | null> => {
+    // The login response already contains the user — use it directly instead
+    // of a separate /api/auth/me round-trip (which was flaky behind caches).
+    const user = await apiFetch<User>("/api/auth/login", {
+      method: "POST",
+      body: { email, password },
+    });
+    setUser(user);
+    return user;
+  }, []);
 
   const register = useCallback(
     async (name: string, email: string, password: string): Promise<User | null> => {
-      await apiFetch("/api/auth/register", {
+      const user = await apiFetch<User>("/api/auth/register", {
         method: "POST",
         body: { name, email, password },
       });
-      return refresh();
+      setUser(user);
+      return user;
     },
-    [refresh]
+    []
   );
 
   const logout = useCallback(async () => {
