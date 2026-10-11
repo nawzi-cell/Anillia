@@ -120,7 +120,14 @@ describe("POST /api/checkout", () => {
   });
 
   it("applies a coupon to the order totals", async () => {
-    await customerWithCart(3);
+    const variant = await stockedVariant();
+    const product = await prisma.product.findUniqueOrThrow({
+      where: { id: variant.productId },
+      select: { price: true },
+    });
+    const unitPrice = variant.price ?? product.price ?? 1000;
+    const qty = Math.max(2, Math.ceil(1600 / unitPrice));
+    await customerWithCart(qty);
     const couponRoute = await import("@/app/api/cart/coupon/route");
     const applied = await readJson(
       await couponRoute.POST(

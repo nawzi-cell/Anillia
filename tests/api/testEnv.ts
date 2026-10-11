@@ -7,7 +7,7 @@
 
 export const TEST_DB_URL =
   process.env.TEST_DATABASE_URL ||
-  "postgresql://postgres:postgres@localhost:5432/anilliea_test";
+  "postgresql://anilliea:anilliea@localhost:5432/anilliea_test?schema=public";
 
 export const TEST_ADMIN_EMAIL = "admin@anilliea.test";
 export const TEST_ADMIN_PASSWORD = "TestAdmin123!";

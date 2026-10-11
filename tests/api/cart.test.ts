@@ -21,7 +21,7 @@ async function purchasableVariant() {
       product: { published: true },
       inventory: { quantity: { gt: 5 } },
     },
-    include: { inventory: true, product: { select: { id: true } } },
+    include: { inventory: true, product: { select: { id: true, price: true } } },
   });
   if (!variant?.inventory) throw new Error("seed has no stocked variant");
   return variant;
@@ -150,7 +150,7 @@ describe("cart coupons", () => {
     await loggedInCustomer();
     const variant = await purchasableVariant();
     // WELCOME10 needs a 1500 subtotal — buy enough units to clear it.
-    const unitPrice = variant.price ?? 1000;
+    const unitPrice = variant.price ?? variant.product.price ?? 1000;
     const quantity = Math.min(Math.ceil(1600 / unitPrice), 10);
     const itemsRoute = await import("@/app/api/cart/items/route");
     const added = await readJson(
