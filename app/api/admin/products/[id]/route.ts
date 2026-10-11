@@ -56,7 +56,24 @@ export async function GET(
       },
     });
     if (!product) return fail("Product not found.", 404);
-    return ok(product);
+
+    // Serialize: map junction rows → collection IDs as ProductFull.collections: string[]
+    // and map variant inventory into variant for frontend convenience.
+    const serialized = {
+      ...product,
+      collections: product.collections.map((pc) => pc.collection.id),
+      variants: product.variants.map((v) => ({
+        ...v,
+        quantity: v.inventory?.quantity ?? 0,
+        lowStockThreshold: v.inventory?.lowStockThreshold ?? 10,
+      })),
+      // Compute aggregate stock from variants or product-level inventory
+      stock: product.variants.length > 0
+        ? product.variants.reduce((sum, v) => sum + (v.inventory?.quantity ?? 0), 0)
+        : (product.inventories.find((inv) => inv.variantId === null)?.quantity ?? 0),
+    };
+
+    return ok(serialized);
   } catch (e) {
     return handleApiError(e);
   }

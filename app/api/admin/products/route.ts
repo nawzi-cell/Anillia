@@ -60,7 +60,11 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         include: {
           category: { select: { id: true, name: true, slug: true } },
           images: { orderBy: { sortOrder: "asc" }, take: 1 },
-          _count: { select: { variants: true, reviews: true } },
+          variants: {
+            select: { id: true, name: true, sku: true, inventory: { select: { quantity: true } } },
+            orderBy: { sortOrder: "asc" },
+          },
+          inventories: { select: { quantity: true, variantId: true } },
         },
         orderBy: { createdAt: "desc" },
         skip: (q.page - 1) * q.limit,
@@ -68,7 +72,17 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       }),
     ]);
 
-    return paginated(products, q.page, q.limit, total);
+    // Compute aggregate stock and normalize the response shape.
+    const serialized = products.map((p) => ({
+      ...p,
+      stock: p.variants.length > 0
+        ? p.variants.reduce((sum, v) => sum + (v.inventory?.quantity ?? 0), 0)
+        : (p.inventories.find((inv) => inv.variantId === null)?.quantity ?? 0),
+      variants: p.variants.map(({ inventory: _inv, ...v }) => v),
+      inventories: undefined, // strip from response
+    }));
+
+    return paginated(serialized, q.page, q.limit, total);
   } catch (e) {
     return handleApiError(e);
   }

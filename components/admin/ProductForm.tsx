@@ -97,7 +97,16 @@ export function ProductForm({ productId }: ProductFormProps) {
         setCompareAtPrice(p.compareAtPrice != null ? String(p.compareAtPrice) : "");
         setSku(p.sku ?? "");
         setCategoryId(p.categoryId ?? "");
-        setCollectionIds(p.collections ?? []);
+        // p.collections from the API is an array of collection IDs (string[])
+        // because the ProductFull type declares collections: string[].
+        // The API serializer maps collections through the junction table.
+        setCollectionIds(Array.isArray(p.collections)
+          ? p.collections.map((c: string | { id?: string; collectionId?: string; collection?: { id: string } }) =>
+              typeof c === "string"
+                ? c
+                : c.collection?.id ?? c.id ?? c.collectionId ?? ""
+            ).filter(Boolean)
+          : []);
         setColorsInput((p.colors ?? []).join(", "));
         setMaterial(p.material ?? "");
         setCareInstructions(p.careInstructions ?? "");
@@ -177,7 +186,7 @@ export function ProductForm({ productId }: ProductFormProps) {
         compareAtPrice: numOrNull(compareAtPrice),
         sku: sku.trim() || null,
         categoryId: categoryId || null,
-        collections: collectionIds,
+        collectionIds: collectionIds,
         colors: colorsInput
           .split(",")
           .map((c) => c.trim())
