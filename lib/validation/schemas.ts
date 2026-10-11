@@ -47,6 +47,11 @@ export const updateProfileSchema = z.object({
   phone: z.string().trim().min(7).max(20).optional().nullable(),
 });
 
+export const adminChangeEmailSchema = z.object({
+  currentPassword: z.string().min(1, "Current password is required"),
+  newEmail: emailField,
+});
+
 // ---------------------------------------------------------------------------
 // Addresses
 // ---------------------------------------------------------------------------

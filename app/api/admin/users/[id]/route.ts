@@ -43,13 +43,20 @@ export async function PATCH(
       return ok({ id: target.id, role: target.role });
     }
 
+    if (body.role === "ADMIN") {
+      return fail(
+        "Single-admin policy enabled. Creating additional administrators is disabled.",
+        400,
+      );
+    }
+
     if (target.role === "ADMIN" && body.role === "CUSTOMER") {
       const remainingAdmins = await prisma.user.count({
         where: { role: "ADMIN", id: { not: target.id } },
       });
       if (remainingAdmins === 0) {
         return fail(
-          "You cannot demote the last remaining admin. Promote someone else first.",
+          "You cannot demote the last remaining admin.",
           409,
         );
       }
@@ -63,8 +70,7 @@ export async function PATCH(
 
     await logAudit({
       userId: admin.id,
-      action:
-        body.role === "ADMIN" ? "admin.user.promoted" : "admin.user.demoted",
+      action: "admin.user.demoted",
       entity: "User",
       entityId: target.id,
       metadata: {

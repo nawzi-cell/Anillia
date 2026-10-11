@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { User, Lock, Store, AlertTriangle } from "lucide-react";
+import { User, Lock, Store, AlertTriangle, Mail } from "lucide-react";
 import { apiFetch } from "@/components/admin/admin-api";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { AdminCard } from "@/components/admin/AdminCard";
@@ -33,6 +33,11 @@ export default function AdminSettingsPage() {
   const [email, setEmail] = useState("");
   const [savingProfile, setSavingProfile] = useState(false);
 
+  // Email update state
+  const [newEmail, setNewEmail] = useState("");
+  const [emailCurrentPassword, setEmailCurrentPassword] = useState("");
+  const [changingEmail, setChangingEmail] = useState(false);
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -56,6 +61,32 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     void load();
   }, []);
+
+  const handleChangeEmail = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!newEmail.trim() || !emailCurrentPassword) {
+      error("Enter your new email address and current password.");
+      return;
+    }
+    setChangingEmail(true);
+    try {
+      await apiFetch("/api/admin/change-email", {
+        method: "POST",
+        body: JSON.stringify({
+          newEmail: newEmail.trim(),
+          currentPassword: emailCurrentPassword,
+        }),
+      });
+      success("Admin email address updated.");
+      setEmail(newEmail.trim().toLowerCase());
+      setNewEmail("");
+      setEmailCurrentPassword("");
+    } catch (e) {
+      error(e instanceof Error ? e.message : "Failed to change email.");
+    } finally {
+      setChangingEmail(false);
+    }
+  };
 
   const handleSaveProfile = async (e: FormEvent) => {
     e.preventDefault();
@@ -146,7 +177,7 @@ export default function AdminSettingsPage() {
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
             />
-            <AdminInput label="Email" value={email} disabled hint="Email cannot be changed here." />
+            <AdminInput label="Current Email" value={email} disabled hint="To change email, use the form below." />
             <AdminInput
               label="Phone"
               value={phone}
@@ -157,6 +188,40 @@ export default function AdminSettingsPage() {
             <div>
               <AdminButton type="submit" loading={savingProfile}>
                 Save profile
+              </AdminButton>
+            </div>
+          </form>
+        </AdminCard>
+
+        {/* Change Email */}
+        <AdminCard
+          title={
+            <span className="inline-flex items-center gap-2">
+              <Mail size={18} className="text-olive" /> Change admin email
+            </span>
+          }
+        >
+          <form onSubmit={handleChangeEmail} className="flex flex-col gap-4">
+            <AdminInput
+              label="New email address"
+              type="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+              placeholder="newadmin@example.com"
+              required
+            />
+            <AdminInput
+              label="Current password"
+              type="password"
+              value={emailCurrentPassword}
+              onChange={(e) => setEmailCurrentPassword(e.target.value)}
+              placeholder="Confirm your password to update email"
+              autoComplete="current-password"
+              required
+            />
+            <div>
+              <AdminButton type="submit" loading={changingEmail}>
+                Update email
               </AdminButton>
             </div>
           </form>

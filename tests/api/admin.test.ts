@@ -69,8 +69,8 @@ describe("admin authorization", () => {
   });
 });
 
-describe("PATCH /api/admin/users/[id] (staff & access)", () => {
-  it("promotes a customer to ADMIN and demotes back to CUSTOMER", async () => {
+describe("Single-admin enforcement and staff policy", () => {
+  it("enforces single-admin policy: prevents creating additional administrators", async () => {
     await loginAsAdmin();
     const email = uniqueEmail("staff");
     await registerViaApi(email, PASSWORD);
@@ -86,26 +86,14 @@ describe("PATCH /api/admin/users/[id] (staff & access)", () => {
         { params: { id: target.id } },
       ),
     );
-    expect(promote.status).toBe(200);
-    expect(promote.json.data.role).toBe("ADMIN");
-
-    const demote = await readJson(
-      await PATCH(
-        makeRequest(`/api/admin/users/${target.id}`, {
-          method: "PATCH",
-          body: { role: "CUSTOMER" },
-        }),
-        { params: { id: target.id } },
-      ),
-    );
-    expect(demote.status).toBe(200);
-    expect(demote.json.data.role).toBe("CUSTOMER");
+    expect(promote.status).toBe(400);
+    expect(promote.json.message).toMatch(/single-admin policy enabled/i);
   });
 
   it("blocks an admin from changing their own role", async () => {
     await loginAsAdmin();
-    const me = await prisma.user.findUniqueOrThrow({
-      where: { email: TEST_ADMIN_EMAIL },
+    const me = await prisma.user.findFirstOrThrow({
+      where: { role: "ADMIN" },
     });
     const { PATCH } = await import("@/app/api/admin/users/[id]/route");
     const out = await readJson(
@@ -120,52 +108,57 @@ describe("PATCH /api/admin/users/[id] (staff & access)", () => {
     expect(out.status).toBe(403);
   });
 
-  it("keeps at least one admin: self-demotion is refused", async () => {
+  it("admin can change their email with valid password and rejects bad password", async () => {
     await loginAsAdmin();
-    // Create a second admin, then demote them so exactly one admin is left.
-    const email = uniqueEmail("secondadmin");
-    await registerViaApi(email, PASSWORD);
-    const second = await prisma.user.findUniqueOrThrow({ where: { email } });
-    const { PATCH } = await import("@/app/api/admin/users/[id]/route");
-    const promote = await readJson(
-      await PATCH(
-        makeRequest(`/api/admin/users/${second.id}`, {
-          method: "PATCH",
-          body: { role: "ADMIN" },
-        }),
-        { params: { id: second.id } },
-      ),
-    );
-    expect(promote.status).toBe(200);
-    const demote = await readJson(
-      await PATCH(
-        makeRequest(`/api/admin/users/${second.id}`, {
-          method: "PATCH",
-          body: { role: "CUSTOMER" },
-        }),
-        { params: { id: second.id } },
-      ),
-    );
-    expect(demote.status).toBe(200);
+    const { POST } = await import("@/app/api/admin/change-email/route");
+    const newEmail = uniqueEmail("adminnew");
 
-    // Now only the seeded admin remains — they cannot demote themselves,
-    // so the shop can never end up with zero admins.
-    const adminCount = await prisma.user.count({ where: { role: "ADMIN" } });
-    expect(adminCount).toBe(1);
-    const lastAdmin = await prisma.user.findUniqueOrThrow({
-      where: { email: TEST_ADMIN_EMAIL },
-    });
-    const blocked = await readJson(
-      await PATCH(
-        makeRequest(`/api/admin/users/${lastAdmin.id}`, {
-          method: "PATCH",
-          body: { role: "CUSTOMER" },
+    // Rejects bad current password
+    const badPw = await readJson(
+      await POST(
+        makeRequest("/api/admin/change-email", {
+          method: "POST",
+          body: { newEmail, currentPassword: "WrongPassword123!" },
         }),
-        { params: { id: lastAdmin.id } },
       ),
     );
-    expect(blocked.status).toBe(403);
-    expect(await prisma.user.count({ where: { role: "ADMIN" } })).toBe(1);
+    expect(badPw.status).toBe(401);
+
+    // Rejects if customer attempts to access
+    await loginAsCustomer();
+    const custAttempt = await readJson(
+      await POST(
+        makeRequest("/api/admin/change-email", {
+          method: "POST",
+          body: { newEmail, currentPassword: PASSWORD },
+        }),
+      ),
+    );
+    expect(custAttempt.status).toBe(403);
+
+    // Succeeds for admin with correct password
+    await loginAsAdmin();
+    const success = await readJson(
+      await POST(
+        makeRequest("/api/admin/change-email", {
+          method: "POST",
+          body: { newEmail, currentPassword: TEST_ADMIN_PASSWORD },
+        }),
+      ),
+    );
+    expect(success.status).toBe(200);
+    expect(success.json.data.email).toBe(newEmail);
+
+    // Revert back so other tests continue seamlessly
+    const revert = await readJson(
+      await POST(
+        makeRequest("/api/admin/change-email", {
+          method: "POST",
+          body: { newEmail: TEST_ADMIN_EMAIL, currentPassword: TEST_ADMIN_PASSWORD },
+        }),
+      ),
+    );
+    expect(revert.status).toBe(200);
   });
 
   it("returns 404 for an unknown user id", async () => {

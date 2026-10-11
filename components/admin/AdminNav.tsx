@@ -40,6 +40,7 @@ const sections: NavSection[] = [
       { href: "/admin/products", label: "Products", icon: Package },
       { href: "/admin/categories", label: "Categories", icon: FolderTree },
       { href: "/admin/collections", label: "Collections", icon: Layers },
+      { href: "/admin/journal", label: "Journal", icon: ScrollText },
       { href: "/admin/reviews", label: "Reviews", icon: Star },
     ],
   },

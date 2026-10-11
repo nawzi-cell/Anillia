@@ -642,27 +642,41 @@ async function main(): Promise<void> {
     bcrypt.hash(DEMO_PASSWORD, BCRYPT_ROUNDS),
   ]);
 
-  // -- Users ----------------------------------------------------------
-  // NOTE: passwordHash is intentionally included in `update` so that
-  // re-running the seed after changing ADMIN_PASSWORD / DEMO_PASSWORD
-  // actually rotates the stored credentials instead of silently keeping
-  // the old hash (which used to make sign-in fail with the new password).
-  await prisma.user.upsert({
-    where: { email: ADMIN_EMAIL },
-    update: {
-      name: "Anilliea Admin",
-      role: Role.ADMIN,
-      emailVerified: true,
-      passwordHash: adminHash,
-    },
-    create: {
-      email: ADMIN_EMAIL,
-      passwordHash: adminHash,
-      name: "Anilliea Admin",
-      role: Role.ADMIN,
-      emailVerified: true,
-    },
+  // Provision single admin account:
+  // If an ADMIN user already exists (whether under ADMIN_EMAIL or an updated email),
+  // preserve their password and credentials so redeployments never overwrite
+  // dashboard-managed passwords.
+  const existingAdmin = await prisma.user.findFirst({
+    where: { role: Role.ADMIN },
   });
+
+  if (!existingAdmin) {
+    await prisma.user.upsert({
+      where: { email: ADMIN_EMAIL },
+      update: {
+        name: "Anilliea Admin",
+        role: Role.ADMIN,
+        emailVerified: true,
+        passwordHash: adminHash,
+      },
+      create: {
+        email: ADMIN_EMAIL,
+        passwordHash: adminHash,
+        name: "Anilliea Admin",
+        role: Role.ADMIN,
+        emailVerified: true,
+      },
+    });
+  } else {
+    // If admin exists, ensure their role is confirmed ADMIN and email is verified
+    await prisma.user.update({
+      where: { id: existingAdmin.id },
+      data: {
+        role: Role.ADMIN,
+        emailVerified: true,
+      },
+    });
+  }
 
   const customer = await prisma.user.upsert({
     where: { email: DEMO_CUSTOMER_EMAIL },
