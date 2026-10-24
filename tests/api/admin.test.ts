@@ -69,6 +69,87 @@ describe("admin authorization", () => {
   });
 });
 
+describe("admin inventory", () => {
+  it("returns paginated rows with the flags and sku the table renders", async () => {
+    await loginAsAdmin();
+    const { GET } = await import("@/app/api/admin/inventory/route");
+    const out = await readJson(
+      await GET(makeRequest("/api/admin/inventory?limit=100")),
+    );
+    expect(out.status).toBe(200);
+    expect(out.json.success).toBe(true);
+    expect(Array.isArray(out.json.data.items)).toBe(true);
+    expect(out.json.data.items.length).toBeGreaterThan(0);
+    expect(out.json.data).toEqual(
+      expect.objectContaining({
+        page: 1,
+        total: expect.any(Number),
+        totalPages: expect.any(Number),
+        lowStockCount: expect.any(Number),
+      }),
+    );
+    expect(out.json.data.items[0]).toEqual(
+      expect.objectContaining({
+        id: expect.any(String),
+        sku: expect.any(String),
+        quantity: expect.any(Number),
+        reserved: expect.any(Number),
+        available: expect.any(Number),
+        lowStockThreshold: expect.any(Number),
+        isLow: expect.any(Boolean),
+        product: expect.objectContaining({ name: expect.any(String) }),
+      }),
+    );
+  });
+
+  it("filters low-stock rows and keeps the global low-stock count", async () => {
+    await loginAsAdmin();
+    const { GET } = await import("@/app/api/admin/inventory/route");
+    const all = await readJson(
+      await GET(makeRequest("/api/admin/inventory?limit=100")),
+    );
+    const low = await readJson(
+      await GET(
+        makeRequest("/api/admin/inventory?limit=100&lowStock=true"),
+      ),
+    );
+    expect(low.status).toBe(200);
+    expect(low.json.data.items.every((r: { isLow: boolean }) => r.isLow)).toBe(
+      true,
+    );
+    expect(low.json.data.total).toBe(all.json.data.lowStockCount);
+  });
+
+  it("accepts an admin quantity update and rejects customers", async () => {
+    await loginAsAdmin();
+    const target = await prisma.inventory.findFirstOrThrow();
+    const { PUT } = await import("@/app/api/admin/inventory/[id]/route");
+    const out = await readJson(
+      await PUT(
+        makeRequest(`/api/admin/inventory/${target.id}`, {
+          method: "PUT",
+          body: { quantity: target.quantity, lowStockThreshold: target.lowStockThreshold },
+        }),
+        { params: { id: target.id } },
+      ),
+    );
+    expect(out.status).toBe(200);
+    expect(out.json.data.quantity).toBe(target.quantity);
+
+    await loginAsCustomer();
+    const forbidden = await readJson(
+      await PUT(
+        makeRequest(`/api/admin/inventory/${target.id}`, {
+          method: "PUT",
+          body: { quantity: target.quantity },
+        }),
+        { params: { id: target.id } },
+      ),
+    );
+    expect(forbidden.status).toBe(403);
+  });
+});
+
 describe("Single-admin enforcement and staff policy", () => {
   it("enforces single-admin policy: prevents creating additional administrators", async () => {
     await loginAsAdmin();

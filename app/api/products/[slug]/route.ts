@@ -45,8 +45,13 @@ export async function GET(
       }),
     ]);
 
+    const withStock = withAvailability(product);
     return ok({
-      ...withAvailability(product),
+      ...withStock,
+      collections: withStock.collections.map(({ collection }) => ({
+        slug: collection.slug,
+        name: collection.name,
+      })),
       reviewSummary: {
         count,
         average: avg._avg.rating ? Number(avg._avg.rating.toFixed(1)) : null,

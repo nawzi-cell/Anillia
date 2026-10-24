@@ -40,7 +40,9 @@ export async function getPublishedJournalPosts(): Promise<JournalPost[]> {
       },
     });
 
-    return articles.map(toJournalPost);
+    // Until the first article is published in the admin panel, keep the
+    // bundled editorial content as the storefront's starting library.
+    return articles.length > 0 ? articles.map(toJournalPost) : staticJournalPosts;
   } catch {
     return staticJournalPosts;
   }
@@ -62,7 +64,11 @@ export async function getPublishedJournalPost(
       },
     });
 
-    return article ? toJournalPost(article) : undefined;
+    if (article) return toJournalPost(article);
+    const publishedCount = await prisma.journalArticle.count({
+      where: { published: true },
+    });
+    return publishedCount === 0 ? getStaticJournalPost(slug) : undefined;
   } catch {
     return getStaticJournalPost(slug);
   }

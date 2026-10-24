@@ -12,12 +12,14 @@ import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
+import { Alert } from "@/components/ui/Alert";
 
 export default function WishlistPage() {
   const { user, loading: authLoading } = useAuth();
   const { items, loading, moveToCart, toggle } = useWishlist();
   const router = useRouter();
   const [movingId, setMovingId] = useState<string | null>(null);
+  const [moveError, setMoveError] = useState("");
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -35,8 +37,11 @@ export default function WishlistPage() {
 
   const moveOne = async (product: ProductListItem) => {
     setMovingId(product.id);
+    setMoveError("");
     try {
       await moveToCart(product);
+    } catch (err) {
+      setMoveError(err instanceof Error ? err.message : "Could not move this item to your bag.");
     } finally {
       setMovingId(null);
     }
@@ -51,6 +56,12 @@ export default function WishlistPage() {
           {items.length} saved item{items.length === 1 ? "" : "s"}
         </p>
       </div>
+
+      {moveError && (
+        <Alert tone="error" className="mb-6">
+          {moveError}
+        </Alert>
+      )}
 
       {loading ? (
         <div className="flex justify-center py-16">

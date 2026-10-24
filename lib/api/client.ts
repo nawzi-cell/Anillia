@@ -262,6 +262,12 @@ export interface Order {
   shippingPostalCode: string | null;
   notes: string | null;
   createdAt: string;
+  payment?: {
+    method: string | null;
+    status: string;
+    provider?: string | null;
+    metadata?: { instructions?: string | null; message?: string | null } | null;
+  } | null;
 }
 
 /** Build a display address from the order's flat shipping fields. */
@@ -312,5 +318,6 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  phone?: string | null;
   role: string;
 }

@@ -6,7 +6,7 @@ import {
   type Paginated,
   type ProductListItem,
 } from "@/lib/api/client";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { ProductFilters } from "@/components/products/ProductFilters";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { Pagination } from "@/components/ui/Pagination";
@@ -102,53 +102,57 @@ export async function ShopListing({
   };
 
   return (
-    <div className="container-x pb-16 md:pb-20">
-      <Breadcrumbs trail={trail} />
-      <div className="mb-8 mt-2">
-        <h1 className="font-serif text-4xl text-espresso md:text-5xl">{title}</h1>
-        {description && (
-          <p className="mt-3 max-w-2xl font-sans text-sm leading-relaxed text-espresso-muted md:text-base">
-            {description}
-          </p>
-        )}
-        {products.total > 0 && (
-          <p className="mt-2 font-sans text-xs uppercase tracking-widest2 text-taupe-dark">
-            {products.total} product{products.total === 1 ? "" : "s"}
-          </p>
-        )}
-      </div>
+    <>
+      <PageHeader
+        eyebrow="The collection"
+        title={title}
+        description={description}
+        trail={trail}
+        meta={
+          products.total > 0 ? (
+            <p className="flex items-baseline gap-2 border-b border-espresso/15 pb-1 font-sans text-[10px] uppercase tracking-widest2 text-taupe-dark">
+              <span className="font-serif text-2xl italic text-espresso">
+                {products.total}
+              </span>
+              piece{products.total === 1 ? "" : "s"}
+            </p>
+          ) : undefined
+        }
+      />
 
-      <div className="lg:grid lg:grid-cols-[240px_1fr] lg:gap-10">
-        <aside aria-label="Product filters" className="lg:sticky lg:top-28 lg:self-start">
-          <ProductFilters
-            categories={categories}
-            collections={collections}
-            lockedCategory={lockedCategory}
-          />
-        </aside>
-        <div>
-          {items.length === 0 ? (
-            <EmptyState
-              icon={SearchX}
-              title="No products found"
-              description="Try adjusting your filters or search — or browse the full collection."
-              action={
-                <Link
-                  href={lockedCategory ? `/shop/${lockedCategory}` : "/shop"}
-                  className="inline-flex items-center justify-center rounded-full bg-espresso px-6 py-3 font-sans text-[13px] font-semibold uppercase tracking-widest2 text-ivory transition-colors hover:bg-espresso-light"
-                >
-                  Clear filters
-                </Link>
-              }
+      <div className="container-x pb-16 pt-8 md:pb-24 md:pt-10">
+        <div className="lg:grid lg:grid-cols-[240px_1fr] lg:gap-12">
+          <aside aria-label="Product filters" className="lg:sticky lg:top-28 lg:self-start">
+            <ProductFilters
+              categories={categories}
+              collections={collections}
+              lockedCategory={lockedCategory}
             />
-          ) : (
-            <>
-              <ProductGrid products={items} columns={3} />
-              <Pagination page={page} totalPages={totalPages} buildHref={withPage} />
-            </>
-          )}
+          </aside>
+          <div>
+            {items.length === 0 ? (
+              <EmptyState
+                icon={SearchX}
+                title="No products found"
+                description="Try adjusting your filters or search — or browse the full collection."
+                action={
+                  <Link
+                    href={lockedCategory ? `/shop/${lockedCategory}` : "/shop"}
+                    className="inline-flex items-center justify-center rounded-full bg-espresso px-6 py-3 font-sans text-[13px] font-semibold uppercase tracking-widest2 text-ivory transition-colors hover:bg-espresso-light"
+                  >
+                    Clear filters
+                  </Link>
+                }
+              />
+            ) : (
+              <>
+                <ProductGrid products={items} columns={3} />
+                <Pagination page={page} totalPages={totalPages} buildHref={withPage} />
+              </>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -131,7 +131,7 @@ export default function AdminDashboardPage() {
       {/* Stat cards */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatCard
-          label="Total revenue"
+          label="Order value (non-cancelled)"
           value={formatPKR(stats.revenue)}
           icon={<Banknote size={20} />}
         />
@@ -163,8 +163,8 @@ export default function AdminDashboardPage() {
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <AdminCard
-            title="Revenue — last 14 days"
-            subtitle="Daily gross revenue in PKR."
+            title="Order value — last 14 days"
+            subtitle="Non-cancelled order totals in PKR, including orders awaiting payment."
           >
             <LineChart
               data={revenuePoints}

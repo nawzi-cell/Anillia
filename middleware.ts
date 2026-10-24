@@ -22,11 +22,6 @@ export function middleware(req: NextRequest): NextResponse {
 
   const { pathname } = req.nextUrl;
 
-  // TEMP-DIAG (2026-10-03): trace sign-in bounce. Remove after diagnosis.
-  console.log(
-    `[auth-diag] middleware: no session cookie on ${pathname} → sending back to /login`
-  );
-
   if (pathname.startsWith("/api/")) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },

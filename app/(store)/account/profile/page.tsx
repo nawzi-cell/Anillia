@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Card } from "@/components/ui/Card";
@@ -13,6 +13,13 @@ export default function ProfilePage() {
 
   const [name, setName] = useState(user?.name ?? "");
   const [phone, setPhone] = useState("");
+
+  // AuthProvider hydrates after the first render; fill the form once the
+  // signed-in user is known.
+  useEffect(() => {
+    setName(user?.name ?? "");
+    setPhone(user?.phone ?? "");
+  }, [user?.id, user?.name, user?.phone]);
   const [profileBusy, setProfileBusy] = useState(false);
   const [profileMsg, setProfileMsg] = useState<{ tone: "success" | "error"; text: string } | null>(null);
 
@@ -37,7 +44,7 @@ export default function ProfilePage() {
     try {
       await apiFetch("/api/auth/me", {
         method: "PUT",
-        body: { name: name.trim(), phone: phone.trim() || undefined },
+        body: { name: name.trim(), phone: phone.trim() || null },
       });
       await refresh();
       setProfileMsg({ tone: "success", text: "Your profile has been updated." });

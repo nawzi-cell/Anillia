@@ -32,7 +32,7 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
   const [busy, setBusy] = useState<"cart" | "buy" | null>(null);
   const [error, setError] = useState("");
 
-  const variants = product.variants ?? [];
+  const variants = useMemo(() => product.variants ?? [], [product.variants]);
   const hasVariants = variants.length > 0;
 
   const colors = useMemo(
@@ -173,7 +173,7 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
         <QuantitySelector value={qty} onChange={setQty} max={10} />
         <Button
           size="lg"
-          className="flex-1"
+          className="order-3 w-full whitespace-nowrap sm:order-none sm:w-auto sm:flex-1"
           disabled={busy !== null || !inStock}
           onClick={() => doAdd(false)}
         >
@@ -185,7 +185,7 @@ export function ProductPurchase({ product }: { product: ProductDetail }) {
           onClick={() => toggle(product)}
           aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={wished}
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-espresso/20 text-espresso transition-colors hover:border-espresso"
+          className="order-2 flex h-12 w-12 items-center justify-center rounded-full border border-espresso/20 text-espresso transition-colors hover:border-espresso sm:order-none"
         >
           <Heart className={`h-5 w-5 ${wished ? "fill-espresso" : ""}`} aria-hidden />
         </button>

@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TriangleAlert, Save } from "lucide-react";
-import { apiFetch } from "@/components/admin/admin-api";
+import { apiFetch, type Paginated } from "@/components/admin/admin-api";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { DataTable } from "@/components/admin/DataTable";
@@ -10,10 +10,15 @@ import { EmptyState } from "@/components/admin/EmptyState";
 import { ErrorState, TableSkeleton } from "@/components/admin/Spinner";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { AdminButton } from "@/components/admin/AdminButton";
+import { Pagination } from "@/components/admin/Pagination";
 import { useToast } from "@/components/admin/Toast";
 import type { InventoryItem } from "@/components/admin/types";
 
 export const dynamic = "force-dynamic";
+
+interface InventoryPage extends Paginated<InventoryItem> {
+  lowStockCount: number;
+}
 
 export default function AdminInventoryPage() {
   const { success, error } = useToast();
@@ -21,32 +26,40 @@ export default function AdminInventoryPage() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
   const [lowStockOnly, setLowStockOnly] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [lowCount, setLowCount] = useState(0);
   const [editingQty, setEditingQty] = useState<Record<string, string>>({});
   const [savingId, setSavingId] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setErr(null);
-    try {
-      const d = await apiFetch<InventoryItem[]>("/api/admin/inventory");
-      setItems(d);
-    } catch (e) {
-      setErr(e instanceof Error ? e.message : "Failed to load inventory.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    void load();
-  }, [load]);
-
-  const filtered = useMemo(
-    () => (lowStockOnly ? items.filter((i) => i.isLow) : items),
-    [items, lowStockOnly],
+  const load = useCallback(
+    async (p: number, lowOnly: boolean, silent = false) => {
+      if (!silent) setLoading(true);
+      setErr(null);
+      try {
+        const params = new URLSearchParams({ page: String(p) });
+        if (lowOnly) params.set("lowStock", "true");
+        const d = await apiFetch<InventoryPage>(
+          `/api/admin/inventory?${params.toString()}`,
+        );
+        setItems(d.items);
+        setPage(d.page);
+        setTotalPages(d.totalPages);
+        setTotal(d.total);
+        setLowCount(d.lowStockCount);
+      } catch (e) {
+        setErr(e instanceof Error ? e.message : "Failed to load inventory.");
+      } finally {
+        if (!silent) setLoading(false);
+      }
+    },
+    [],
   );
 
-  const lowCount = useMemo(() => items.filter((i) => i.isLow).length, [items]);
+  useEffect(() => {
+    void load(page, lowStockOnly);
+  }, [load, page, lowStockOnly]);
 
   const saveQuantity = async (item: InventoryItem) => {
     const raw = editingQty[item.id];
@@ -57,12 +70,9 @@ export default function AdminInventoryPage() {
     }
     setSavingId(item.id);
     try {
-      const updated = await apiFetch<InventoryItem>(
+      await apiFetch<InventoryItem>(
         `/api/admin/inventory/${item.id}`,
         { method: "PUT", body: JSON.stringify({ quantity: qty }) },
-      );
-      setItems((prev) =>
-        prev.map((i) => (i.id === item.id ? { ...i, ...updated } : i)),
       );
       setEditingQty((prev) => {
         const next = { ...prev };
@@ -70,6 +80,7 @@ export default function AdminInventoryPage() {
         return next;
       });
       success(`Stock for ${item.sku ?? item.product.name} updated to ${qty}.`);
+      await load(page, lowStockOnly, true);
     } catch (e) {
       error(e instanceof Error ? e.message : "Failed to update stock.");
     } finally {
@@ -87,7 +98,10 @@ export default function AdminInventoryPage() {
             <input
               type="checkbox"
               checked={lowStockOnly}
-              onChange={(e) => setLowStockOnly(e.target.checked)}
+              onChange={(e) => {
+                setLowStockOnly(e.target.checked);
+                setPage(1);
+              }}
               className="h-4 w-4 accent-[#737963]"
             />
             Low stock only
@@ -102,7 +116,7 @@ export default function AdminInventoryPage() {
 
       <AdminCard bodyClassName="px-0 py-0">
         {err ? (
-          <ErrorState message={err} onRetry={() => void load()} />
+          <ErrorState message={err} onRetry={() => void load(page, lowStockOnly)} />
         ) : loading ? (
           <div className="px-5 py-4">
             <TableSkeleton rows={10} cols={7} />
@@ -110,7 +124,7 @@ export default function AdminInventoryPage() {
         ) : (
           <DataTable
             rowKey={(i) => i.id}
-            rows={filtered}
+            rows={items}
             defaultSortKey="product"
             empty={
               <EmptyState
@@ -242,6 +256,16 @@ export default function AdminInventoryPage() {
               },
             ]}
           />
+        )}
+        {!err && !loading && total > 0 && (
+          <div className="border-t border-espresso/10 px-5 py-4">
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              total={total}
+              onPageChange={setPage}
+            />
+          </div>
         )}
       </AdminCard>
     </>

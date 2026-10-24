@@ -4,6 +4,9 @@ import { prisma } from "@/lib/db/prisma";
 import { ok } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { validateCoupon, type CouponLike } from "@/lib/coupons/engine";
+import { rateLimit } from "@/lib/utils/rate-limit";
+import { getClientIp } from "@/lib/utils/request";
+import { fail } from "@/lib/api/response";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,6 +22,9 @@ const validateSchema = z.object({
  */
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
+    const rl = rateLimit(`coupon:validate:${getClientIp(req)}`, 30, 60_000);
+    if (!rl.ok) return fail("Too many requests. Please try again later.", 429);
+
     const body = validateSchema.parse(await req.json());
     const code = body.code.trim().toUpperCase();
 

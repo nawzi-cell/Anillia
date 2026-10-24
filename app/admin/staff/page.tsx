@@ -78,8 +78,8 @@ export default function AdminStaffPage() {
 
   // Who am I? Used to block self-demotion in the UI (the API enforces it too).
   useEffect(() => {
-    apiFetch<{ id: string }>("/api/auth/me")
-      .then((me) => setMeId(me.id))
+    apiFetch<{ user: { id: string } }>("/api/auth/me")
+      .then((me) => setMeId(me.user.id))
       .catch(() => setMeId(null));
   }, []);
 

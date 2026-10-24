@@ -9,9 +9,10 @@
 ## Features
 
 - **Storefront** — product catalogue with categories, collections, search, sort and filters; product detail pages with color/size variants and image galleries
-- **Cart & checkout** — guest-friendly cart, coupon codes, delivery method choice (Standard / Express), COD and bank-transfer payment
-- **Accounts** — email/password auth with JWT sessions, email verification, password reset, saved addresses
-- **Orders** — order history, status tracking, inventory reservation on checkout, low-stock signals
+- **Cart & checkout** — signed-in cart, coupon codes, delivery method choice (Standard / Express), COD and bank-transfer payment
+- **Accounts** — email/password auth with JWT sessions, password reset (email delivery requires SMTP), saved addresses
+- **Orders** — order history, status tracking with an enforced transition flow, atomic stock decrement at checkout, stock restore on cancellation/return, low-stock signals
+- **Journal** — database-backed articles when published in admin, with a bundled static fallback
 - **Reviews** — moderated product reviews (pending / approved / hidden)
 - **Admin panel** — manage products, variants, inventory, categories, collections, coupons, orders and users
 - **Coupons** — percentage and fixed-amount coupons with minimum order, max discount, usage limits and expiry windows
@@ -119,7 +120,9 @@ npm run dev
 | `BANK_ACCOUNT_TITLE`  | no       | —                                               | Shown at checkout for bank-transfer orders           |
 | `BANK_ACCOUNT_NUMBER` | no       | —                                               | Shown at checkout for bank-transfer orders           |
 | `BANK_IBAN`           | no       | —                                               | Shown at checkout for bank-transfer orders           |
-| `PAYMENT_SECRET`      | no       | —                                               | Verifies payment callbacks once an online gateway is integrated |
+| `PAYMENT_SECRET`      | no       | —                                               | Reserved for payment callbacks once an online gateway is integrated |
+| `BLOB_READ_WRITE_TOKEN` | no     | —                                               | Vercel Blob token for persistent admin image uploads |
+| `DIAG_TOKEN`          | no       | —                                               | Enables authenticated `/api/diag` in production (`Bearer` token) |
 
 ---
 
@@ -166,13 +169,16 @@ npm run test:watch  # watch mode
 
 | Method | Route                              | Auth     | Description                        |
 | ------ | ---------------------------------- | -------- | ---------------------------------- |
-| POST   | `/api/auth/register`               | Public   | Create account, send verify email  |
+| POST   | `/api/auth/register`               | Public   | Create account, set session cookie |
 | POST   | `/api/auth/login`                  | Public   | Email/password → JWT session       |
-| POST   | `/api/auth/logout`                 | Customer | Invalidate session                 |
-| GET    | `/api/auth/me`                     | Customer | Current user profile               |
-| POST   | `/api/auth/verify-email`           | Public   | Verify email with token            |
-| POST   | `/api/auth/forgot-password`        | Public   | Send password-reset email          |
-| POST   | `/api/auth/reset-password`         | Public   | Reset password with token          |
+| POST   | `/api/auth/logout`                 | Public   | Clear the session cookie           |
+| GET    | `/api/auth/me`                     | Customer | `{ user }` for the session user     |
+| PUT    | `/api/auth/me`                     | Customer | Update name/phone                  |
+| POST   | `/api/auth/forgot-password`        | Public   | Send password-reset email (503 in production without SMTP) |
+| POST   | `/api/auth/reset-password`         | Public   | Reset password with a single-use token |
+| POST   | `/api/auth/change-password`        | Customer | Change password with current password |
+
+> Email verification is **not implemented** (`emailVerified` exists on the schema but login does not require it). Do not advertise it.
 
 ### Catalogue
 
@@ -187,12 +193,12 @@ npm run test:watch  # watch mode
 
 | Method | Route                              | Auth     | Description                        |
 | ------ | ---------------------------------- | -------- | ---------------------------------- |
-| GET    | `/api/cart`                        | Public*  | Current cart (*session cookie)      |
-| POST   | `/api/cart/items`                  | Public*  | Add item                           |
-| PATCH  | `/api/cart/items/[id]`             | Public*  | Update quantity/variant            |
-| DELETE | `/api/cart/items/[id]`             | Public*  | Remove item                        |
-| POST   | `/api/coupons/validate`            | Customer | Validate code against cart         |
-| POST   | `/api/checkout`                    | Customer | Create order (reserves inventory)  |
+| GET    | `/api/cart`                        | Customer | Current cart with server totals     |
+| POST   | `/api/cart/items`                  | Customer | Add item (stock-checked)           |
+| PUT    | `/api/cart/items/[id]`             | Customer | Update quantity                    |
+| DELETE | `/api/cart/items/[id]`             | Customer | Remove item                        |
+| POST   | `/api/coupons/validate`            | Public   | Validate a code and preview discount |
+| POST   | `/api/checkout`                    | Customer | Atomically create order and decrement stock |
 
 ### Orders & account
 
@@ -202,7 +208,7 @@ npm run test:watch  # watch mode
 | GET    | `/api/orders/[id]`                 | Customer | Own order detail                   |
 | GET    | `/api/addresses`                   | Customer | Saved addresses                    |
 | POST   | `/api/addresses`                   | Customer | Add address                        |
-| PATCH  | `/api/addresses/[id]`              | Customer | Update address                     |
+| PUT    | `/api/addresses/[id]`              | Customer | Update address                     |
 | DELETE | `/api/addresses/[id]`              | Customer | Delete address                      |
 | POST   | `/api/reviews`                     | Customer | Submit review (→ PENDING moderation)|
 
@@ -212,16 +218,21 @@ npm run test:watch  # watch mode
 | ------ | ---------------------------------- | -------- | ---------------------------------- |
 | GET    | `/api/admin/products`              | Admin    | List all products                  |
 | POST   | `/api/admin/products`              | Admin    | Create product                     |
-| PATCH  | `/api/admin/products/[id]`         | Admin    | Update product                     |
+| PUT    | `/api/admin/products/[id]`         | Admin    | Update product                     |
 | DELETE | `/api/admin/products/[id]`         | Admin    | Delete product                     |
-| PATCH  | `/api/admin/inventory/[id]`        | Admin    | Adjust inventory                   |
+| PUT    | `/api/admin/inventory/[id]`        | Admin    | Adjust inventory                   |
 | GET    | `/api/admin/orders`                | Admin    | List all orders                    |
-| PATCH  | `/api/admin/orders/[id]`           | Admin    | Update order/payment status        |
+| PUT    | `/api/admin/orders/[id]`           | Admin    | Transition order / payment status  |
 | GET    | `/api/admin/coupons`               | Admin    | List coupons                       |
 | POST   | `/api/admin/coupons`               | Admin    | Create coupon                      |
-| PATCH  | `/api/admin/coupons/[id]`          | Admin    | Update coupon                      |
+| PUT    | `/api/admin/coupons/[id]`          | Admin    | Update coupon                      |
 | GET    | `/api/admin/users`                 | Admin    | List users                         |
-| PATCH  | `/api/admin/reviews/[id]`          | Admin    | Approve/hide review                |
+| PATCH  | `/api/admin/users/[id]`            | Admin    | Change role (single-admin policy)  |
+| PUT    | `/api/admin/reviews/[id]`          | Admin    | Approve/hide review                |
+
+Admin order transitions follow `lib/orders/status.ts`; invalid transitions return 409.
+Cancellation/return restores stock, reverses `soldCount`, releases coupon usage, and is
+safe to retry (same-status updates are idempotent no-ops).
 
 ---
 
@@ -257,8 +268,11 @@ Unit tests live in `tests/unit/` and cover the framework-free domain logic in `l
 | `checkout-inventory.test.ts` | `lib/orders/checkout` — stock shortfall reporting |
 | `authz.test.ts`            | `lib/auth/session` — `assertRole` guards    |
 | `format.test.ts`           | `lib/utils/format` — `formatPKR`, `slugify` |
+| `tokens.test.ts`           | `lib/auth/tokens` — password-reset token hashing |
+| `json-ld.test.ts`          | `lib/utils/json-ld` — JSON-LD script escaping |
 
-Note: the `lib/` modules above are built by the backend engineer against the contracts documented at the top of each test file — tests fail to import until those modules land.
+The full suite currently runs **54 unit tests**. It is self-contained and does
+not need a database.
 
 ### API integration tests
 
@@ -279,9 +293,27 @@ the full flows:
 | `checkout.test.ts`   | order placement, totals math, stock decrement, cart clearing  |
 | `admin.test.ts`      | RBAC (401/403), staff promote/demote guards, dashboard        |
 | `misc.test.ts`       | wishlist, newsletter, contact                                 |
+| `workflows.test.ts`  | end-to-end A–E: checkout, admin→storefront, RBAC, concurrent last-unit stock, failed payment/coupon, coupon limits, cancel/restock |
 
-Requirements: a running Postgres 16 (e.g. `docker compose up -d`).
-Override the test database with `TEST_DATABASE_URL`.
+The API suite currently runs **50 tests across 7 files**. Requirements: a
+running Postgres 16 (e.g. `docker compose up -d`). Override the test database
+with `TEST_DATABASE_URL` (default `anilliea_test`). The provisioning script
+resets only that isolated test database.
+
+### Browser smoke test
+
+```bash
+npm run dev             # in one terminal
+npm run test:e2e        # in another
+```
+
+Uses the locally installed Google Chrome through `playwright-core`. It visits
+the storefront, checks horizontal overflow at 375/390/430/768/1024/1280/1440,
+logs the seeded customer in, verifies the session survives a reload, adds an
+item to the cart, and verifies the admin dashboard loads. Screenshots are
+written to `tests/e2e/artifacts/` (gitignored). Requires `DEMO_PASSWORD` (and
+optionally `ADMIN_EMAIL`/`ADMIN_PASSWORD`) in `.env`; override Chrome with
+`CHROME_PATH` and the URL with `E2E_BASE_URL`.
 
 ---
 
@@ -301,6 +333,23 @@ Recommended: **Vercel** (app) + **managed Postgres** (e.g. Neon, Supabase, RDS).
    npx prisma db seed   # requires ADMIN_PASSWORD and DEMO_PASSWORD
    ```
 6. Point your domain at the Vercel project and update `NEXT_PUBLIC_APP_URL`.
+7. If admin uploads should persist, create a Vercel Blob store and set
+   `BLOB_READ_WRITE_TOKEN`. Without it, local uploads disappear on redeploy.
+
+### Backups and recovery
+
+- Enable automated daily backups + point-in-time recovery on the managed
+  Postgres; verify a restore into a *separate* database at least quarterly.
+- Before every production migration, take an on-demand snapshot. Use
+  `prisma migrate deploy` only; never `migrate dev`, `db push`, or a reset
+  against production.
+- Back up the Blob store/object storage separately — database backups do not
+  include uploaded media.
+- Keep `JWT_SECRET` in the host's secret manager. Rotating it signs everyone
+  out (acceptable for incident response; coordinate with the business).
+- `GET /api/diag` reports booleans/counts only. In production it requires
+  `Authorization: Bearer $DIAG_TOKEN`; leave `DIAG_TOKEN` unset to disable it
+  entirely.
 
 ---
 
@@ -321,5 +370,10 @@ Recommended: **Vercel** (app) + **managed Postgres** (e.g. Neon, Supabase, RDS).
 ## Notes & limitations
 
 - **Payments:** the platform supports **Cash on Delivery** and **bank transfer** today. There is a payment abstraction (`PAYMENT_SECRET`, `PaymentMethod`/`PaymentStatus` enums) ready for a future online gateway (e.g. Stripe/JazzCash/Easypaisa), but no gateway is integrated yet — do not advertise online card payments.
-- **Email:** transactional email (verification, password reset, order confirmation) is **best-effort / log-based until SMTP is configured**. Set the `SMTP_*` variables to send real email.
+- **Email:** order-confirmation email is best-effort; checkout never fails because email delivery failed. Password reset *requires* SMTP in production (returns 503 otherwise). Email verification is not implemented.
+- **Rate limiting:** the fixed-window limiter is in-process memory. It works on a single long-lived Node instance but is not shared across serverless instances; add a shared store (e.g. Redis/Upstash) before relying on it for abuse prevention at scale.
+- **Sessions:** stateless 7-day JWTs. Changing a password does not revoke other existing sessions yet.
+- **Payments:** ONLINE is intentionally rejected until a gateway is integrated. COD/bank-transfer orders remain `PENDING` until an admin marks them paid.
+- **Dashboard "order value":** sums non-cancelled order totals, including COD/bank-transfer orders not yet paid. It is not collected revenue.
 - Prices are whole PKR integers everywhere (`price`, `compareAtPrice`, coupon `value`) — no floating-point money math.
+- Known lint warnings (5, no errors): a few admin `<img>` tags and a custom font `<link>` in the root layout. They are non-blocking and tracked in the audit report.

@@ -209,6 +209,7 @@ const PRODUCTS: SeedProduct[] = [
       "Hand wash cold with mild detergent. Hang dry in shade. Cool iron on reverse if needed.",
     featured: true,
     soldCount: 1240,
+    imageUrl: "/images/products/everyday-modest-deal.webp",
     variants: colorVariants("AMD-EMD", ["Ivory", "Taupe", "Blush"], [120, 95, 80]),
   },
   {
@@ -229,6 +230,7 @@ const PRODUCTS: SeedProduct[] = [
       "Machine wash cold on gentle, or hand wash. Hang dry. No iron needed — the crinkle is the texture.",
     featured: false,
     soldCount: 860,
+    imageUrl: "/images/products/crinkle-georgette-hijab.webp",
     variants: colorVariants(
       "AMD-CGH",
       ["Ivory", "Taupe", "Espresso", "Olive", "Black"],
@@ -251,6 +253,7 @@ const PRODUCTS: SeedProduct[] = [
     careInstructions: "Machine wash cold. Tumble dry low or hang dry.",
     featured: false,
     soldCount: 720,
+    imageUrl: "/images/products/jersey-underscarf.webp",
     variants: colorVariants(
       "AMD-JUS",
       ["Taupe", "Espresso", "Black"],
@@ -273,6 +276,7 @@ const PRODUCTS: SeedProduct[] = [
     careInstructions: "Wipe clean with a dry cloth. Store dry.",
     featured: false,
     soldCount: 540,
+    imageUrl: "/images/products/everyday-pin-set.webp",
     variants: [
       {
         name: "One Size",
@@ -300,6 +304,7 @@ const PRODUCTS: SeedProduct[] = [
     careInstructions: "Hand wash cold. Hang dry. Cool iron.",
     featured: false,
     soldCount: 310,
+    imageUrl: "/images/products/lightweight-niqab.webp",
     variants: colorVariants("AMD-LNQ", ["Black", "Espresso"], [45, 45]),
   },
   {
@@ -319,6 +324,7 @@ const PRODUCTS: SeedProduct[] = [
     careInstructions: "Hand wash cold. Hang dry in shade.",
     featured: true,
     soldCount: 480,
+    imageUrl: "/images/products/signature-modest-deal.webp",
     variants: colorVariants("AMD-SMD", ["Ivory", "Taupe"], [50, 50]),
   },
   {
@@ -337,6 +343,7 @@ const PRODUCTS: SeedProduct[] = [
     careInstructions: "Hand wash cold. Hang dry in shade.",
     featured: true,
     soldCount: 390,
+    imageUrl: "/images/products/gift-edit.webp",
     variants: colorVariants("AMD-TGE", ["Blush", "Ivory"], [40, 40]),
   },
   {
@@ -357,6 +364,7 @@ const PRODUCTS: SeedProduct[] = [
     careInstructions: "Hand wash cold. Hang dry in shade. Cool iron.",
     featured: false,
     soldCount: 265,
+    imageUrl: "/images/products/premium-modest-bundle.webp",
     variants: colorVariants("AMD-PMB", ["Taupe", "Olive"], [30, 30]),
   },
   {

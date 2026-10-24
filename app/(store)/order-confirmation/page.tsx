@@ -72,11 +72,11 @@ function Confirmation() {
         <CheckCircle2 className="mx-auto h-14 w-14 text-olive" aria-hidden />
         <p className="eyebrow mb-3 mt-6">Order confirmed</p>
         <h1 className="font-serif text-4xl text-espresso md:text-5xl">
-          Thank you — your order is on its way
+          Thank you — your order is confirmed
         </h1>
         <p className="mx-auto mt-4 max-w-md font-sans text-sm leading-relaxed text-espresso-muted">
           We&apos;ve received your order and will begin preparing it shortly.
-          A confirmation has been sent to your email.
+          You can follow its progress from your account.
         </p>
       </div>
 
@@ -114,6 +114,25 @@ function Confirmation() {
           </div>
         </div>
       </Card>
+
+      {order.paymentMethod === "BANK_TRANSFER" && (
+        <Card className="mb-6">
+          <h2 className="mb-3 font-serif text-xl text-espresso">Bank transfer details</h2>
+          {order.payment?.metadata?.instructions ? (
+            <p className="whitespace-pre-line font-sans text-sm leading-relaxed text-espresso">
+              {order.payment.metadata.instructions}
+            </p>
+          ) : (
+            <p className="font-sans text-sm leading-relaxed text-espresso-muted">
+              Please contact us at hello@anilliea.pk with your order number and we
+              will share the bank account details.
+            </p>
+          )}
+          <p className="mt-3 font-sans text-xs text-espresso-muted">
+            Reference: {order.orderNumber} · Amount: {formatPKR(order.total)}
+          </p>
+        </Card>
+      )}
 
       <Card className="mb-6">
         <h2 className="mb-4 font-serif text-xl text-espresso">Items</h2>
@@ -175,7 +194,7 @@ function Confirmation() {
           <li>Our team confirms your order and prepares it with care.</li>
           <li>
             {order.paymentMethod === "BANK_TRANSFER"
-              ? "We share our bank details — your order ships once the transfer is confirmed."
+              ? "Transfer the amount using the reference above — your order ships once the transfer is confirmed."
               : order.paymentMethod === "COD"
                 ? "Keep the exact amount ready — you pay in cash when your order arrives."
                 : "Your payment is processed securely."}

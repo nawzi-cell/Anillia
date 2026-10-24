@@ -120,18 +120,19 @@ export default async function ProductPage({ params }: { params: { slug: string }
         />
       </div>
 
-      <div className="container-x grid gap-10 pb-14 lg:grid-cols-2 lg:gap-16">
+      <div className="container-x grid gap-10 pb-16 lg:grid-cols-2 lg:items-start lg:gap-16 xl:gap-20">
         <ProductGallery images={product.images} name={product.name} />
 
-        <div>
+        <div className="lg:pt-2">
           {product.category && (
-            <p className="eyebrow mb-2">
-              <Link href={`/shop/${product.category.slug}`} className="hover:text-espresso">
+            <p className="eyebrow flex items-center gap-3">
+              <span className="h-px w-8 bg-taupe/80" aria-hidden />
+              <Link href={`/shop/${product.category.slug}`} className="transition-colors hover:text-espresso">
                 {product.category.name}
               </Link>
             </p>
           )}
-          <h1 className="font-serif text-4xl leading-tight text-espresso md:text-5xl">
+          <h1 className="mt-4 text-balance font-serif text-4xl leading-[1.05] text-espresso md:text-5xl">
             {product.name}
           </h1>
 

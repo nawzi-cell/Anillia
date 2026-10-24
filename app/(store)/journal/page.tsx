@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
-import { SectionHeading } from "@/components/shared/SectionHeading";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Reveal } from "@/components/shared/Reveal";
-import { journalPosts } from "@/content/journal";
+import { getPublishedJournalPosts } from "@/lib/journal/articles";
 import { formatPostDate } from "@/components/shared/format";
 
 export const metadata: Metadata = {
@@ -14,25 +13,41 @@ export const metadata: Metadata = {
     "Styling notes, fabric guides and wardrobe wisdom from the ANILLIÉA editors.",
 };
 
-export default function JournalPage() {
+export const dynamic = "force-dynamic";
+
+export default async function JournalPage() {
+  const journalPosts = await getPublishedJournalPosts();
   const [featured, ...rest] = journalPosts;
 
   return (
-    <div className="container-x pb-16 md:pb-20">
-      <Breadcrumbs trail={[{ label: "Journal" }]} />
-      <div className="mb-10 mt-2">
-        <SectionHeading
-          eyebrow="Notes & guides"
-          title="The Journal"
-          description="Styling notes, fabric guides and wardrobe wisdom — written slowly, meant to last."
-        />
-      </div>
+    <>
+      <PageHeader
+        eyebrow="Notes & guides"
+        title={
+          <>
+            The <em className="text-olive-dark">Journal</em>
+          </>
+        }
+        description="Styling notes, fabric guides and wardrobe wisdom — written slowly, meant to last."
+        trail={[{ label: "Journal" }]}
+        meta={
+          journalPosts.length > 0 ? (
+            <p className="flex items-baseline gap-2 border-b border-espresso/15 pb-1 font-sans text-[10px] uppercase tracking-widest2 text-taupe-dark">
+              <span className="font-serif text-2xl italic text-espresso">
+                {journalPosts.length}
+              </span>
+              stor{journalPosts.length === 1 ? "y" : "ies"}
+            </p>
+          ) : undefined
+        }
+      />
 
+      <div className="container-x py-10 pb-16 md:pb-24">
       {featured && (
         <Reveal>
           <Link
             href={`/journal/${featured.slug}`}
-            className="group grid overflow-hidden rounded-3xl border border-espresso/10 bg-ivory-light md:grid-cols-2"
+            className="group grid overflow-hidden rounded-[2rem] border border-espresso/10 bg-ivory-light shadow-soft md:grid-cols-2"
           >
             <div className="relative aspect-[16/10] bg-ivory-dark md:aspect-auto md:min-h-[320px]">
               <Image
@@ -90,6 +105,7 @@ export default function JournalPage() {
           </Reveal>
         ))}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

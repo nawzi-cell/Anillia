@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { apiFetch } from "@/lib/api/client";
-import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -64,18 +64,19 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="container-x pb-16 md:pb-20">
-      <Breadcrumbs trail={[{ label: "Contact" }]} />
-      <div className="mb-10 mt-2 max-w-2xl">
-        <p className="eyebrow mb-3">Get in touch</p>
-        <h1 className="font-serif text-4xl text-espresso md:text-5xl">Contact Us</h1>
-        <p className="mt-3 font-sans text-sm leading-relaxed text-espresso-muted md:text-base">
-          Questions about an order, a fabric, or sizing? We would love to hear
-          from you — write below or reach us directly.
-        </p>
-      </div>
+    <>
+      <PageHeader
+        eyebrow="Get in touch"
+        title={
+          <>
+            Contact <em className="text-olive-dark">Us</em>
+          </>
+        }
+        description="Questions about an order, a fabric, or sizing? We would love to hear from you — write below or reach us directly."
+        trail={[{ label: "Contact" }]}
+      />
 
-      <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
+      <div className="container-x grid gap-10 py-10 pb-16 md:pb-24 lg:grid-cols-[1fr_360px]">
         <Card>
           <form onSubmit={submit} className="grid gap-4 sm:grid-cols-2">
             <Input label="Your name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ayesha Khan" autoComplete="name" required />
@@ -115,6 +116,6 @@ export default function ContactPage() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }

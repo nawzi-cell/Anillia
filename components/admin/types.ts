@@ -130,17 +130,23 @@ export interface OrderItem {
 
 export interface OrderFull extends OrderListItem {
   items: OrderItem[];
-  payment: { method: string | null; status: string } | null;
-  shippingName?: string | null;
-  shippingPhone?: string | null;
-  shippingAddress?: string | null;
-  shippingCity?: string | null;
-  shippingPostalCode?: string | null;
-  shippingCountry?: string | null;
-  shippingMethod?: string | null;
-  shippingCost?: number | null;
-  subtotal?: number | null;
-  discount?: number | null;
+  payment: {
+    method: string | null;
+    status: string;
+    provider?: string | null;
+    metadata?: { instructions?: string | null; message?: string | null } | null;
+  } | null;
+  deliveryMethod: string;
+  deliveryFee: number;
+  shippingName: string | null;
+  shippingPhone: string | null;
+  shippingAddressLine1: string | null;
+  shippingAddressLine2: string | null;
+  shippingCity: string | null;
+  shippingProvince: string | null;
+  shippingPostalCode: string | null;
+  subtotal: number;
+  discount: number;
   couponCode: string | null;
   notes?: string | null;
   user: {

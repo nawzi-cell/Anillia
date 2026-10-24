@@ -6,22 +6,20 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { JsonLd } from "@/components/shared/JsonLd";
 import { NewsletterForm } from "@/components/shared/NewsletterForm";
-import { getJournalPost, journalPosts } from "@/content/journal";
+import { getPublishedJournalPost, getPublishedJournalPosts } from "@/lib/journal/articles";
 import { formatPostDate } from "@/components/shared/format";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") || "http://localhost:3000";
 
-export function generateStaticParams() {
-  return journalPosts.map((p) => ({ slug: p.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const post = getJournalPost(params.slug);
+  const post = await getPublishedJournalPost(params.slug);
   if (!post) return { title: "Article not found" };
   return {
     title: post.title,
@@ -36,19 +34,23 @@ export async function generateMetadata({
   };
 }
 
-export default function JournalPostPage({ params }: { params: { slug: string } }) {
-  const post = getJournalPost(params.slug);
+export default async function JournalPostPage({ params }: { params: { slug: string } }) {
+  const [post, journalPosts] = await Promise.all([
+    getPublishedJournalPost(params.slug),
+    getPublishedJournalPosts(),
+  ]);
   if (!post) notFound();
 
   const idx = journalPosts.findIndex((p) => p.slug === post.slug);
-  const nextPost = journalPosts[(idx + 1) % journalPosts.length];
+  const nextPost =
+    journalPosts.length > 1 ? journalPosts[(idx + 1) % journalPosts.length] : null;
 
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: post.title,
     description: post.excerpt,
-    image: `${siteUrl}${post.image}`,
+    image: post.image.startsWith("http") ? post.image : `${siteUrl}${post.image}`,
     datePublished: post.date,
     author: { "@type": "Organization", name: "ANILLIÉA" },
     publisher: { "@type": "Organization", name: "ANILLIÉA" },

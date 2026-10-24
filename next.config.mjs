@@ -13,9 +13,15 @@ const securityHeaders = [
 const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
-    // Product imagery is served locally from /public. Add remotePatterns here
-    // only when a real image host / CDN is introduced.
-    remotePatterns: [],
+    // Product imagery is normally served locally from /public. Admin uploads
+    // in production go to Vercel Blob, so that host must be allow-listed or
+    // next/image refuses to optimise the returned URL.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
   },
   async headers() {
     return [

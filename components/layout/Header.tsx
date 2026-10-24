@@ -37,12 +37,12 @@ export function Header() {
   };
 
   const iconBtn =
-    "relative rounded-full p-2 text-espresso transition-colors hover:bg-espresso/5";
+    "relative rounded-full p-2 text-espresso transition-colors hover:bg-espresso/[0.06]";
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-espresso/10 bg-ivory/95 backdrop-blur">
-        <div className="container-x flex h-16 items-center justify-between gap-4 lg:h-20">
+      <header className="sticky top-0 z-50 border-b border-espresso/10 bg-ivory/95 backdrop-blur-md">
+        <div className="container-x flex h-16 items-center justify-between gap-4 lg:h-[4.5rem]">
           {/* Left: mobile menu + wordmark */}
           <div className="flex items-center gap-2">
             <button
@@ -55,8 +55,8 @@ export function Header() {
             </button>
             <BrandLogo
               priority
-              markClassName="h-7 w-auto sm:h-9 lg:h-10"
-              wordmarkClassName="text-base sm:text-xl lg:text-2xl"
+              markClassName="h-8 w-8 sm:h-9 sm:w-9 lg:h-10 lg:w-10"
+              wordmarkClassName="text-base sm:text-lg lg:text-xl"
             />
           </div>
 
@@ -66,17 +66,24 @@ export function Header() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`font-sans text-[13px] font-medium uppercase tracking-widest2 transition-colors hover:text-taupe-dark ${
+                className={`relative font-sans text-[12px] font-medium uppercase tracking-widest2 transition-colors hover:text-espresso ${
                   pathname === link.href ? "text-espresso" : "text-espresso-muted"
                 }`}
               >
                 {link.label}
+                <span
+                  className={`absolute -bottom-2 left-1/2 h-px -translate-x-1/2 bg-gold transition-all duration-300 ${
+                    pathname === link.href ? "w-5" : "w-0"
+                  }`}
+                  aria-hidden
+                />
               </Link>
             ))}
           </nav>
 
           {/* Right: icons */}
           <div className="flex items-center gap-0.5 sm:gap-1">
+            <span className="mx-1.5 hidden h-5 w-px bg-espresso/10 sm:block" aria-hidden />
             <button
               type="button"
               aria-label={searchOpen ? "Close search" : "Search"}

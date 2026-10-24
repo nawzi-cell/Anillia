@@ -29,17 +29,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     // Generic message — never reveal whether the email exists.
     if (!user || !(await verifyPassword(body.password, user.passwordHash))) {
-      // TEMP-DIAG (2026-10-03): trace sign-in bounce. Remove after diagnosis.
-      console.log(`[auth-diag] sign-in rejected for "${body.email}" (bad credentials)`);
       return fail("Invalid email or password.", 401);
     }
 
     const token = signToken({ sub: user.id, role: user.role });
     const res = ok(toUserDTO(user));
-    // TEMP-DIAG (2026-10-03): trace sign-in bounce. Remove after diagnosis.
-    console.log(
-      `[auth-diag] sign-in ok: ${user.email} role=${user.role} — setting session cookie`
-    );
     return setSessionCookie(req, res, token);
   } catch (e) {
     return handleApiError(e);

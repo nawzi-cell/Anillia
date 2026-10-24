@@ -27,6 +27,11 @@ const wishlistItemInclude = {
         take: 1,
         select: { id: true, url: true, alt: true, sortOrder: true },
       },
+      inventories: true,
+      variants: {
+        where: { active: true },
+        select: { id: true, inventory: { select: { quantity: true, reserved: true } } },
+      },
     },
   },
 } as const;
@@ -41,7 +46,25 @@ export async function GET(): Promise<NextResponse> {
       include: wishlistItemInclude,
       orderBy: { createdAt: "desc" },
     });
-    return ok(items);
+
+    // Expose only the aggregate availability; inventory rows stay server-side.
+    const serialized = items.map((row) => {
+      const variantStock = row.product.variants.reduce(
+        (sum, v) =>
+          sum +
+          Math.max(0, (v.inventory?.quantity ?? 0) - (v.inventory?.reserved ?? 0)),
+        0
+      );
+      const productRow = row.product.inventories.find((i) => i.variantId === null);
+      const available =
+        row.product.variants.length > 0
+          ? variantStock
+          : Math.max(0, (productRow?.quantity ?? 0) - (productRow?.reserved ?? 0));
+      const { inventories: _inventories, variants: _variants, ...product } = row.product;
+      return { ...row, product: { ...product, available } };
+    });
+
+    return ok(serialized);
   } catch (e) {
     return handleApiError(e);
   }

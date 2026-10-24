@@ -15,18 +15,25 @@ export default function AccountOverviewPage() {
   const { user } = useAuth();
   const { count: wishlistCount } = useWishlist();
   const [orders, setOrders] = useState<Order[]>([]);
+  const [orderTotal, setOrderTotal] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     apiFetch<Paginated<Order>>("/api/orders")
-      .then((d) => setOrders((d.items ?? []).slice(0, 3)))
-      .catch(() => setOrders([]))
+      .then((d) => {
+        setOrders((d.items ?? []).slice(0, 3));
+        setOrderTotal(d.total ?? 0);
+      })
+      .catch(() => {
+        setOrders([]);
+        setOrderTotal(0);
+      })
       .finally(() => setLoading(false));
   }, []);
 
   const cards = [
     { label: "Wishlist", value: String(wishlistCount), href: "/wishlist", icon: Heart },
-    { label: "Orders", value: loading ? "…" : String(orders.length), href: "/account/orders", icon: Package },
+    { label: "Orders", value: loading ? "…" : String(orderTotal), href: "/account/orders", icon: Package },
   ];
 
   return (

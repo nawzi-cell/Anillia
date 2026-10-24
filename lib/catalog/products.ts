@@ -38,12 +38,20 @@ function availableOf(row: Inventory | null | undefined): number {
  */
 export function withAvailability<T extends ProductCard>(product: T) {
   const productRow = product.inventories.find((i) => i.variantId === null);
+  const variants = product.variants.map((v) => ({
+    ...v,
+    available: availableOf(v.inventory),
+  }));
+  // Variant products keep stock on variant rows; the product-level row is a
+  // placeholder (admin product creation always creates one at quantity 0).
+  // No-variant products use the product-level row instead.
+  const available =
+    variants.length > 0
+      ? variants.reduce((sum, v) => sum + v.available, 0)
+      : availableOf(productRow);
   return {
     ...product,
-    available: availableOf(productRow),
-    variants: product.variants.map((v) => ({
-      ...v,
-      available: availableOf(v.inventory),
-    })),
+    available,
+    variants,
   };
 }

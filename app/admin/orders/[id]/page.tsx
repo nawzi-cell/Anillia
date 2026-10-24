@@ -13,7 +13,8 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import { DataTable } from "@/components/admin/DataTable";
 import { LoadingState, ErrorState } from "@/components/admin/Spinner";
 import { useToast } from "@/components/admin/Toast";
-import { ORDER_STATUSES, PAYMENT_STATUSES } from "@/components/admin/order-status";
+import { PAYMENT_STATUSES } from "@/components/admin/order-status";
+import { allowedNextStatuses } from "@/lib/orders/status";
 import type { OrderFull } from "@/components/admin/types";
 
 export const dynamic = "force-dynamic";
@@ -38,7 +39,7 @@ export default function AdminOrderDetailPage({
       const o = await apiFetch<OrderFull>(`/api/admin/orders/${params.id}`);
       setOrder(o);
       setStatus(o.status);
-      setPaymentStatus(o.payment?.status ?? o.paymentStatus);
+      setPaymentStatus(o.paymentStatus);
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Failed to load order.");
     } finally {
@@ -61,7 +62,7 @@ export default function AdminOrderDetailPage({
       });
       setOrder(updated);
       setStatus(updated.status);
-      setPaymentStatus(updated.payment?.status ?? updated.paymentStatus);
+      setPaymentStatus(updated.paymentStatus);
       success("Order updated.");
     } catch (e) {
       error(e instanceof Error ? e.message : "Failed to update order.");
@@ -91,14 +92,21 @@ export default function AdminOrderDetailPage({
 
   const shippingLines = [
     order.shippingName,
-    order.shippingAddress,
-    [order.shippingCity, order.shippingPostalCode].filter(Boolean).join(" "),
-    order.shippingCountry,
-  ].filter(Boolean);
+    order.shippingAddressLine1,
+    order.shippingAddressLine2,
+    [order.shippingProvince, order.shippingCity, order.shippingPostalCode]
+      .filter(Boolean)
+      .join(", "),
+  ].filter((line): line is string => Boolean(line));
+
+  const nextStatuses = allowedNextStatuses(order.status);
+  const statusOptions = [
+    order.status,
+    ...nextStatuses.filter((s) => s !== order.status),
+  ];
 
   const dirty =
-    status !== order.status ||
-    paymentStatus !== (order.payment?.status ?? order.paymentStatus);
+    status !== order.status || paymentStatus !== order.paymentStatus;
 
   return (
     <>
@@ -174,10 +182,10 @@ export default function AdminOrderDetailPage({
                     <dd>{formatPKR(order.subtotal)}</dd>
                   </div>
                 )}
-                {order.shippingCost != null && (
+                {order.deliveryFee != null && (
                   <div className="flex justify-between text-espresso-muted">
-                    <dt>Shipping{order.shippingMethod ? ` (${order.shippingMethod})` : ""}</dt>
-                    <dd>{formatPKR(order.shippingCost)}</dd>
+                    <dt>Delivery ({order.deliveryMethod.replace(/_/g, " ")})</dt>
+                    <dd>{order.deliveryFee === 0 ? "Free" : formatPKR(order.deliveryFee)}</dd>
                   </div>
                 )}
                 {order.discount != null && order.discount > 0 && (
@@ -231,12 +239,18 @@ export default function AdminOrderDetailPage({
             <div className="flex flex-col gap-4">
               <AdminSelect
                 label="Order status"
+                hint={
+                  nextStatuses.length > 0
+                    ? `Next allowed: ${nextStatuses.join(", ").replace(/_/g, " ")}`
+                    : "This is a final status."
+                }
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
               >
-                {ORDER_STATUSES.map((s) => (
+                {statusOptions.map((s) => (
                   <option key={s} value={s}>
                     {s.replace(/_/g, " ")}
+                    {s === order.status ? " (current)" : ""}
                   </option>
                 ))}
               </AdminSelect>
@@ -293,10 +307,7 @@ export default function AdminOrderDetailPage({
                   {order.payment?.method ?? "—"}
                 </p>
                 <div className="mt-1">
-                  <StatusBadge
-                    status={order.payment?.status ?? order.paymentStatus}
-                    tone="payment"
-                  />
+                  <StatusBadge status={order.paymentStatus} tone="payment" />
                 </div>
               </div>
             </div>

@@ -46,8 +46,6 @@ export function setSessionCookie(
   token: string
 ): NextResponse {
   const opts = cookieOptions(req);
-  // TEMP-DIAG (2026-10-03): trace sign-in bounce. Remove after diagnosis.
-  console.log(`[auth-diag] setSessionCookie: secure=${opts.secure}`);
   res.cookies.set(COOKIE_NAME, token, {
     ...opts,
     maxAge: SEVEN_DAYS_SECONDS,

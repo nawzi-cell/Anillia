@@ -22,10 +22,6 @@ export default async function AdminLayout({
   // back to /login) whenever that URL didn't point at this exact server
   // instance, e.g. a dev-tunnel URL or a different local port.
   const user = await getCurrentUser();
-  // TEMP-DIAG (2026-10-03): trace sign-in bounce. Remove after diagnosis.
-  console.log(
-    `[auth-diag] admin guard: ${user ? `session ok (${user.email}, ${user.role})` : "NO usable session"}`
-  );
   if (!user || user.role !== "ADMIN") {
     redirect("/login?next=/admin");
   }

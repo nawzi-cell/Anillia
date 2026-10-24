@@ -39,28 +39,19 @@ export function toUserDTO(user: {
 }
 
 /**
- * TEMP-DIAG (2026-10-03): fine-grained session check used to diagnose the
- * sign-in bounce. Returns WHY the session is unusable instead of just null.
- * Remove once resolved.
+ * Read the session cookie, verify the JWT, and fetch the user
+ * (without passwordHash). Returns null when there is no session,
+ * the token is invalid/expired, or the user no longer exists.
  */
-export type SessionDiag = "OK" | "NO_COOKIE" | "BAD_TOKEN" | "NO_USER" | "ERROR";
-
-export async function getSessionDiag(): Promise<{
-  diag: SessionDiag;
-  user: SessionUser | null;
-}> {
+export async function getCurrentUser(): Promise<SessionUser | null> {
   try {
     const token = cookies().get(COOKIE_NAME)?.value;
-    if (!token) {
-      console.log("[auth-diag] session check: NO cookie in request");
-      return { diag: "NO_COOKIE", user: null };
-    }
+    if (!token) return null;
+
     const payload = verifyToken(token);
-    if (!payload) {
-      console.log("[auth-diag] session check: cookie present but JWT invalid");
-      return { diag: "BAD_TOKEN", user: null };
-    }
-    const user = await prisma.user.findUnique({
+    if (!payload) return null;
+
+    return await prisma.user.findUnique({
       where: { id: payload.sub },
       select: {
         id: true,
@@ -73,27 +64,9 @@ export async function getSessionDiag(): Promise<{
         updatedAt: true,
       },
     });
-    if (!user) {
-      console.log(
-        `[auth-diag] session check: JWT valid but user ${payload.sub} not in DB`
-      );
-      return { diag: "NO_USER", user: null };
-    }
-    return { diag: "OK", user };
-  } catch (e) {
-    console.log("[auth-diag] session check: EXCEPTION", e);
-    return { diag: "ERROR", user: null };
+  } catch {
+    return null;
   }
-};
-
-/**
- * Read the session cookie, verify the JWT, and fetch the user
- * (without passwordHash). Returns null when there is no session,
- * the token is invalid/expired, or the user no longer exists.
- */
-export async function getCurrentUser(): Promise<SessionUser | null> {
-  const { user } = await getSessionDiag();
-  return user;
 }
 
 /** Return the current user, or throw ApiError(401). */

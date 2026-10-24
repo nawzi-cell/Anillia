@@ -9,7 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { apiFetch, type ProductListItem, type WishlistRow } from "@/lib/api/client";
+import { apiFetch, type ProductDetail, type ProductListItem, type WishlistRow } from "@/lib/api/client";
 import { useCart } from "./useCart";
 import { useAuth } from "./useAuth";
 
@@ -77,7 +77,17 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
   const moveToCart = useCallback(
     async (product: ProductListItem) => {
-      await addItem(product.id, undefined, 1);
+      // Wishlist payloads omit variants, so resolve the first in-stock
+      // variant from the product detail endpoint before adding to the bag.
+      const detail = await apiFetch<ProductDetail>(`/api/products/${product.slug}`);
+      const variant = detail.variants.find((v) => v.available > 0);
+      if (detail.variants.length > 0) {
+        if (!variant) throw new Error("This item is out of stock.");
+        await addItem(product.id, variant.id, 1);
+      } else {
+        if ((detail.available ?? 0) <= 0) throw new Error("This item is out of stock.");
+        await addItem(product.id, undefined, 1);
+      }
       await apiFetch(`/api/wishlist/${product.id}`, { method: "DELETE" });
       await refresh();
     },

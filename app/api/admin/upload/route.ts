@@ -19,6 +19,33 @@ const ALLOWED_TYPES: Record<string, string> = {
   "image/gif": "gif",
 };
 
+/** Reject files whose bytes are not actually an allowed image type. */
+function hasValidSignature(mime: string, bytes: Buffer): boolean {
+  switch (mime) {
+    case "image/jpeg":
+      return bytes.length > 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+    case "image/png":
+      return (
+        bytes.length > 8 &&
+        bytes.subarray(0, 8).equals(
+          Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+        )
+      );
+    case "image/gif": {
+      const header = bytes.subarray(0, 6).toString("ascii");
+      return header === "GIF87a" || header === "GIF89a";
+    }
+    case "image/webp":
+      return (
+        bytes.length > 12 &&
+        bytes.subarray(0, 4).toString("ascii") === "RIFF" &&
+        bytes.subarray(8, 12).toString("ascii") === "WEBP"
+      );
+    default:
+      return false;
+  }
+}
+
 /**
  * Admin image upload.
  *
@@ -58,6 +85,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return fail("Image must be smaller than 5 MB.", 400);
     }
 
+    const bytes = Buffer.from(await file.arrayBuffer());
+    if (!hasValidSignature(file.type, bytes)) {
+      return fail("The file contents do not match an allowed image type.", 400);
+    }
+
     const filename = `${randomUUID()}.${ext}`;
     let url: string;
     let storage: "vercel-blob" | "local";
@@ -65,7 +97,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
     if (blobToken) {
       const { put } = await import("@vercel/blob");
-      const blob = await put(`anilliea/${filename}`, file, {
+      const blob = await put(`anilliea/${filename}`, bytes, {
         access: "public",
         token: blobToken,
         contentType: file.type,
@@ -76,8 +108,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       // Local development fallback only.
       const dir = join(process.cwd(), "public", "uploads");
       await mkdir(dir, { recursive: true });
-      const bytes = await file.arrayBuffer();
-      await writeFile(join(dir, filename), Buffer.from(bytes));
+      await writeFile(join(dir, filename), bytes);
       url = `/uploads/${filename}`;
       storage = "local";
     }

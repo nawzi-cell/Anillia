@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
 import { requireAdmin } from "@/lib/auth/session";
-import { paginated } from "@/lib/api/response";
 import { handleApiError } from "@/lib/api/errors";
 import { paginationSchema } from "@/lib/validation/schemas";
 
@@ -36,24 +35,36 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       return {
         id: inv.id,
         productId: inv.productId,
+        sku: inv.variant?.sku ?? inv.product.sku,
         quantity: inv.quantity,
         reserved: inv.reserved,
         available,
         lowStockThreshold: inv.lowStockThreshold,
-        lowStock: available <= inv.lowStockThreshold,
+        isLow: available <= inv.lowStockThreshold,
         updatedAt: inv.updatedAt,
         product: inv.product,
         variant: inv.variant,
       };
     });
 
+    const lowStockCount = withFlags.filter((r) => r.isLow).length;
     const filtered = onlyLowStock
-      ? withFlags.filter((r) => r.lowStock)
+      ? withFlags.filter((r) => r.isLow)
       : withFlags;
     const total = filtered.length;
     const items = filtered.slice((q.page - 1) * q.limit, q.page * q.limit);
 
-    return paginated(items, q.page, q.limit, total);
+    return NextResponse.json({
+      success: true,
+      data: {
+        items,
+        page: q.page,
+        limit: q.limit,
+        total,
+        totalPages: Math.max(1, Math.ceil(total / q.limit)),
+        lowStockCount,
+      },
+    });
   } catch (e) {
     return handleApiError(e);
   }

@@ -2,6 +2,11 @@
 
 import { Truck, Zap } from "lucide-react";
 import { formatPKR } from "@/lib/api/client";
+import {
+  EXPRESS_DELIVERY_FEE,
+  FREE_DELIVERY_THRESHOLD,
+  STANDARD_DELIVERY_FEE,
+} from "@/lib/orders/pricing";
 
 export type DeliveryMethod = "STANDARD" | "EXPRESS";
 
@@ -16,14 +21,15 @@ export const DELIVERY_OPTIONS: {
     id: "STANDARD",
     label: "Standard Delivery",
     detail: "3–5 working days",
-    fee: (subtotal) => (subtotal >= 5000 ? 0 : 250),
+    fee: (subtotal) =>
+      subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : STANDARD_DELIVERY_FEE,
     icon: Truck,
   },
   {
     id: "EXPRESS",
     label: "Express Delivery",
     detail: "1–2 working days",
-    fee: () => 450,
+    fee: () => EXPRESS_DELIVERY_FEE,
     icon: Zap,
   },
 ];
@@ -68,7 +74,7 @@ export function DeliveryOptions({
         );
       })}
       <p className="font-sans text-xs text-espresso-muted">
-        Standard delivery is free on orders of {formatPKR(5000)} and above.
+        Standard delivery is free on orders of {formatPKR(FREE_DELIVERY_THRESHOLD)} and above.
       </p>
     </div>
   );

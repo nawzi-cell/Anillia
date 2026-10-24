@@ -41,9 +41,12 @@ export default function AboutPage() {
       <section className="container-x py-14 md:py-20">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <Reveal>
-            <p className="eyebrow mb-4">About ANILLIÉA</p>
-            <h1 className="font-serif text-5xl leading-[1.05] text-espresso md:text-6xl">
-              Modesty, made modern
+            <p className="eyebrow flex items-center gap-3">
+              <span className="h-px w-8 bg-taupe/80" aria-hidden />
+              About ANILLIÉA
+            </p>
+            <h1 className="mt-5 text-balance font-serif text-5xl leading-[1.02] text-espresso md:text-6xl">
+              Modesty, <em className="text-olive-dark">made modern</em>
             </h1>
             <p className="mt-6 font-sans text-base leading-relaxed text-espresso-muted">
               ANILLIÉA began in Karachi with a simple observation: modest
@@ -60,14 +63,18 @@ export default function AboutPage() {
             </p>
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-ivory-dark">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-ivory-dark shadow-soft">
               <Image
-                src="/images/brand-story.svg"
-                alt="The ANILLIÉA atelier — fabric and craft"
+                src="/images/brand-story.webp"
+                alt="Folded ivory, sage and taupe fabrics with gold pins in the ANILLIÉA atelier"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
                 priority
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-t from-espresso/20 via-transparent to-transparent"
+                aria-hidden
               />
             </div>
           </Reveal>
@@ -82,16 +89,21 @@ export default function AboutPage() {
               title="Our Values"
             />
           </Reveal>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
             {VALUES.map((v, i) => (
-              <Reveal key={v.title} delay={0.06 * i}>
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-olive/10">
-                  <v.icon className="h-5 w-5 text-olive-dark" aria-hidden />
+              <Reveal key={v.title} delay={0.06 * i} className="h-full">
+                <div className="group relative h-full rounded-[1.35rem] border border-espresso/10 bg-ivory/70 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-espresso/20 hover:bg-ivory hover:shadow-lift">
+                  <span className="absolute right-5 top-5 font-serif text-2xl italic text-taupe/50 transition-colors group-hover:text-gold-dark">
+                    0{i + 1}
+                  </span>
+                  <div className="flex h-11 w-11 items-center justify-center rounded-full border border-olive/20 bg-olive/[0.08]">
+                    <v.icon className="h-[18px] w-[18px] text-olive-dark" aria-hidden />
+                  </div>
+                  <h2 className="mt-6 font-serif text-2xl text-espresso">{v.title}</h2>
+                  <p className="mt-2.5 font-sans text-sm leading-relaxed text-espresso-muted">
+                    {v.text}
+                  </p>
                 </div>
-                <h2 className="mt-4 font-serif text-2xl text-espresso">{v.title}</h2>
-                <p className="mt-2 font-sans text-sm leading-relaxed text-espresso-muted">
-                  {v.text}
-                </p>
               </Reveal>
             ))}
           </div>
@@ -100,9 +112,10 @@ export default function AboutPage() {
 
       <section className="container-x py-16 text-center md:py-20">
         <Reveal>
+          <span className="mx-auto mb-6 block h-px w-14 bg-taupe/60" aria-hidden />
           <p className="eyebrow mb-4">Begin</p>
-          <h2 className="mx-auto max-w-xl font-serif text-4xl text-espresso md:text-5xl">
-            Elegance is in the details
+          <h2 className="mx-auto max-w-xl text-balance font-serif text-4xl text-espresso md:text-5xl">
+            Elegance is in the <em className="text-olive-dark">details</em>
           </h2>
           <p className="mx-auto mt-4 max-w-md font-sans text-base text-espresso-muted">
             Explore the collection and find the pieces your everyday has been

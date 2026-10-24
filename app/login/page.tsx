@@ -24,7 +24,15 @@ function LoginForm() {
   const { login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/";
+  const requestedNext = searchParams.get("next") || "/";
+  // Only same-origin absolute paths are allowed: `//evil.example` and
+  // `/\evil.example` are protocol-relative/browser-normalized external URLs.
+  const next =
+    requestedNext.startsWith("/") &&
+    !requestedNext.startsWith("//") &&
+    !requestedNext.startsWith("/\\")
+      ? requestedNext
+      : "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,7 +57,7 @@ function LoginForm() {
         setError("Could not sign you in. Please try again.");
         return;
       }
-      router.push(next.startsWith("/") ? next : "/");
+      router.push(next);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not sign you in. Please try again.");

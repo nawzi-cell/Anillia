@@ -6,7 +6,8 @@ import { handleApiError } from "@/lib/api/errors";
 import { forgotPasswordSchema } from "@/lib/validation/schemas";
 import { rateLimit } from "@/lib/utils/rate-limit";
 import { getClientIp } from "@/lib/utils/request";
-import { sendEmail } from "@/lib/email";
+import { isEmailConfigured, sendEmail } from "@/lib/email";
+import { hashToken } from "@/lib/auth/tokens";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -20,6 +21,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const rl = rateLimit(`auth:forgot:${ip}`, 5, 60 * 60 * 1000);
     if (!rl.ok) {
       return fail("Too many requests. Please try again later.", 429);
+    }
+
+    if (process.env.NODE_ENV === "production" && !isEmailConfigured()) {
+      // Be honest instead of claiming an email was sent: without SMTP the
+      // reset link can never reach the customer.
+      return fail(
+        "Password reset is temporarily unavailable. Please contact hello@anilliea.pk for help.",
+        503
+      );
     }
 
     const body = forgotPasswordSchema.parse(await req.json());
@@ -36,10 +46,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
       await prisma.user.update({
         where: { id: user.id },
-        data: { passwordResetToken: token, passwordResetExpires: expires },
+        data: {
+          passwordResetToken: hashToken(token),
+          passwordResetExpires: expires,
+        },
       });
 
-      const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? "").replace(/\/$/, "");
+      const appUrl = (
+        process.env.NEXT_PUBLIC_APP_URL?.trim() || req.nextUrl.origin
+      ).replace(/\/$/, "");
       const resetLink = `${appUrl}/reset-password?token=${token}`;
 
       await sendEmail({

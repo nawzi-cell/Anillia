@@ -121,11 +121,11 @@ describe("POST /api/auth/login", () => {
 });
 
 describe("GET /api/auth/me", () => {
-  it("returns 401 with a NO_COOKIE diagnostic when unauthenticated", async () => {
+  it("returns a plain 401 without leaking session diagnostics", async () => {
     const { GET } = await import("@/app/api/auth/me/route");
     const out = await readJson(await GET());
     expect(out.status).toBe(401);
-    expect(out.json.diag).toBe("NO_COOKIE");
+    expect(out.json).not.toHaveProperty("diag");
   });
 
   it("returns the current user when the session cookie is present", async () => {
@@ -140,8 +140,8 @@ describe("GET /api/auth/me", () => {
     const { GET } = await import("@/app/api/auth/me/route");
     const out = await readJson(await GET());
     expect(out.status).toBe(200);
-    expect(out.json.data.email).toBe(email);
-    expect(out.json.data).not.toHaveProperty("passwordHash");
+    expect(out.json.data.user.email).toBe(email);
+    expect(out.json.data.user).not.toHaveProperty("passwordHash");
   });
 
   it("honours an explicitly passed session cookie", async () => {
@@ -155,7 +155,7 @@ describe("GET /api/auth/me", () => {
     const { GET } = await import("@/app/api/auth/me/route");
     const out = await readJson(await GET());
     expect(out.status).toBe(200);
-    expect(out.json.data.email).toBe(email);
+    expect(out.json.data.user.email).toBe(email);
   });
 });
 

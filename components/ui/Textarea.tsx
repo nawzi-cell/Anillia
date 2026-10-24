@@ -1,4 +1,4 @@
-import { forwardRef, type TextareaHTMLAttributes } from "react";
+import { forwardRef, useId, type TextareaHTMLAttributes } from "react";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -7,7 +7,8 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, id, className = "", ...rest }, ref) => {
-    const inputId = id ?? rest.name;
+    const generatedId = useId();
+    const inputId = id ?? rest.name ?? generatedId;
     return (
       <div className="w-full">
         {label && (

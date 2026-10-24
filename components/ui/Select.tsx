@@ -1,4 +1,4 @@
-import { forwardRef, type SelectHTMLAttributes } from "react";
+import { forwardRef, useId, type SelectHTMLAttributes } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
@@ -10,7 +10,8 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, options, placeholder, id, className = "", ...rest }, ref) => {
-    const inputId = id ?? rest.name;
+    const generatedId = useId();
+    const inputId = id ?? rest.name ?? generatedId;
     return (
       <div className="w-full">
         {label && (
